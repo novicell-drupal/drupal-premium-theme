@@ -1,0 +1,49 @@
+{
+  "name": "drupal-premium-theme",
+  "description": "Drupal premium theme",
+  "config": {
+    "CSS_BASE": "css/",
+    "CSS_FILEMATCH": "'css/**/*.css'",
+    "CSS_DIST": "dist/css",
+    "WEBPACK_BASE": "js/",
+    "WEBPACK_FILEMATCH": "js/**/*.js",
+    "WEBPACK_DIST": "dist/js"
+  },
+  "scripts": {
+    "build:css": "cross-env NODE_ENV=production postcss $npm_package_config_CSS_FILEMATCH --dir $npm_package_config_CSS_DIST --base $npm_package_config_CSS_BASE --config postcss.config.js",
+    "build:webpack": "fileMatch=$npm_package_config_WEBPACK_FILEMATCH webpack --config webpack.config.js --output-path $npm_package_config_WEBPACK_DIST --context $npm_package_config_WEBPACK_BASE --mode production"
+  },
+  "private": true,
+  "license": "GPL-2.0+",
+  "devDependencies": {
+    "babel-loader": "^8.2.2",
+    "eslint": "^7.21.0",
+    "@babel/preset-env": "^7.13.9",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-webpack-plugin": "^2.5.2",
+    "eslint-plugin-import": "^2.22.1",
+    "glob": "^7.1.6",
+    "cross-env": "^7.0.3",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^8.2.7",
+    "postcss-cli": "^8.3.1",
+    "postcss-nested": "^5.0.4",
+    "postcss-preset-env": "^6.7.0",
+    "cssnano": "^4.1.10",
+    "postcss-reporter": "^7.0.2",
+    "stylelint": "^13.11.0",
+    "stylelint-config-standard": "^20.0.0",
+    "terser-webpack-plugin": "^5.1.1",
+    "webpack": "^5.24.3",
+    "webpack-bundle-analyzer": "^4.4.0",
+    "webpack-cli": "^4.5.0"
+  },
+  "dependencies": {
+    "novicell-lazyload": "^2.2.0",
+    "lodash": "^4.17.21"
+  },
+  "eslintConfig": {
+    "root": true
+  }
+}

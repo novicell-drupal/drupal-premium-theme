@@ -1,0 +1,7 @@
+{
+  "name": "novicell/drupal-premium-theme",
+  "type": "drupal-theme",
+  "description": "Drupal premium theme",
+  "minimum-stability": "dev",
+  "license": "GPL-2.0+"
+}

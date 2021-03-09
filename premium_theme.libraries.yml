@@ -1,0 +1,4 @@
+lazyload:
+  version: VERSION
+  js:
+    dist/js/lazyload.js: {}

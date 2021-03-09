@@ -1,0 +1,797 @@
+<?php
+
+use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
+use Drupal\block\Entity\Block;
+use Drupal\Core\Template\Attribute;
+use Drupal\node\NodeInterface;
+
+require_once __DIR__ . '/includes/layout-block.inc';
+
+/**
+ * Implements hook_theme().
+ */
+function premium_theme_theme(): array {
+  return [
+    'select_form_element' => [
+      'render element' => 'element',
+      'template' => 'form/select-form-element'
+    ],
+  ];
+}
+
+/**
+ * Returns HTML for a form element.
+ * Prepares variables for form element templates.
+ *
+ * Default template: form-element.html.twig.
+ *
+ * In addition to the element itself, the DIV contains a label for the element
+ * based on the optional #title_display property, and an optional #description.
+ *
+ * The optional #title_display property can have these values:
+ * - before: The label is output before the element. This is the default.
+ *   The label includes the #title and the required marker, if #required.
+ * - after: The label is output after the element. For example, this is used
+ *   for radio and checkbox #type elements. If the #title is empty but the
+ * field
+ *   is #required, the label will contain only the required marker.
+ * - invisible: Labels are critical for screen readers to enable them to
+ *   properly navigate through forms but can be visually distracting. This
+ *   property hides the label for everyone except screen readers.
+ * - attribute: Set the title attribute on the element to create a tooltip
+ *   but output no label element. This is supported only for checkboxes
+ *   and radios in
+ *   \Drupal\Core\Render\Element\CompositeFormElementTrait::preRenderCompositeFormElement().
+ * It is used where a visual label is not needed, such as a table of checkboxes
+ * where the row and column provide the context. The tooltip will include the
+ * title and required marker.
+ *
+ * If the #title property is not set, then the label and any required marker
+ * will not be output, regardless of the #title_display or #required values.
+ * This can be useful in cases such as the password_confirm element, which
+ * creates children elements that have their own labels and required markers,
+ * but the parent element should have neither. Use this carefully because a
+ * field without an associated label can cause accessibility challenges.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - element: An associative array containing the properties of the element.
+ *     Properties used: #title, #title_display, #description, #id, #required,
+ *     #children, #type, #name.
+ */
+function premium_theme_preprocess_select_form_element(array &$variables) {
+  $element = &$variables['element'];
+  // This function is invoked as theme wrapper, but the rendered form element
+  // may not necessarily have been processed by
+  // \Drupal::formBuilder()->doBuildForm().
+  $element += [
+    '#title_display' => 'before',
+    '#wrapper_attributes' => [],
+    '#label_attributes' => [],
+  ];
+  $variables['attributes'] = $element['#wrapper_attributes'];
+  // Add element #id for #type 'item'.
+  if (isset($element['#markup']) && !empty($element['#id'])) {
+    $variables['attributes']['id'] = $element['#id'];
+  }
+  // Pass elements #type and #name to template.
+  if (!empty($element['#type'])) {
+    $variables['type'] = $element['#type'];
+  }
+  if (!empty($element['#name'])) {
+    $variables['name'] = $element['#name'];
+  }
+  // Pass elements disabled status to template.
+  $variables['disabled'] = !empty($element['#attributes']['disabled']) ? $element['#attributes']['disabled'] : NULL;
+  // Suppress error messages.
+  $variables['errors'] = NULL;
+  // If #title is not set, we don't display any label.
+  if (!isset($element['#title'])) {
+    $element['#title_display'] = 'none';
+  }
+  $variables['title_display'] = $element['#title_display'];
+  $variables['prefix'] = $element['#field_prefix'] ?? NULL;
+  $variables['suffix'] = $element['#field_suffix'] ?? NULL;
+  $variables['description'] = NULL;
+  if (!empty($element['#description'])) {
+    $variables['description_display'] = $element['#description_display'];
+    $description_attributes = [];
+    if (!empty($element['#id'])) {
+      $description_attributes['id'] = $element['#id'] . '--description';
+    }
+    $variables['description']['attributes'] = new Attribute($description_attributes);
+    $variables['description']['content'] = $element['#description'];
+  }
+  // Add label_display and label variables to template.
+  $variables['label_display'] = $element['#title_display'];
+  $variables['label'] = ['#theme' => 'form_element_label'];
+  $variables['label'] += array_intersect_key($element, array_flip([
+    '#id',
+    '#required',
+    '#title',
+    '#title_display',
+  ]));
+  $variables['label']['#attributes'] = $element['#label_attributes'];
+  $variables['children'] = $element['#children'];
+}
+
+/**
+ * Adding new select theme with dropdown arrow to selects.
+ *
+ * @param array $info
+ *   Element info.
+ */
+function premium_theme_element_info_alter(array &$info) {
+  $route = \Drupal::routeMatch()->getRouteObject();
+  if (!\Drupal::service('router.admin_context')->isAdminRoute($route)) {
+    $info['select']['#theme_wrappers'] = ['select_form_element'];
+  }
+}
+
+/**
+ * Adding new time when build to libraries, to prevent browser cache.
+ *
+ * @param array $libraries
+ *   Found libraries.
+ * @param string $extension
+ *   Theme name.
+ */
+function premium_theme_library_info_alter(array &$libraries, string $extension) {
+  if ($extension === 'premium_theme') {
+    $libraries['lazyload']['version'] = time();
+  }
+}
+
+/**
+ * Add theme suggestion to menus.
+ *
+ * @param array $suggestions
+ *   Suggestion array by reference.
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_theme_suggestions_menu_alter(array &$suggestions, array $variables) {
+  if (isset($variables['attributes']['region'])) {
+    $suggestions[] = 'menu__' . $variables['menu_name'] . '__' . $variables['attributes']['region'];
+  }
+}
+
+/**
+ * Altering the user reset password form.
+ *
+ * @param array $form
+ *   Form render array.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   Form state.
+ */
+function premium_theme_form_user_pass_alter(array &$form, FormStateInterface $form_state) {
+  $form['mail']['#prefix'] = '<div class="input__description">';
+  $form['mail']['#suffix'] = '</div>';
+}
+
+/**
+ * Altering the user reset password form.
+ *
+ * @param array $form
+ *   Form render array.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   Form state.
+ */
+function premium_theme_form_search_form_alter(array &$form, FormStateInterface $form_state) {
+  unset($form['keys']['#title']);
+  $container = [
+    '#type' => 'container',
+    '#attributes' => [
+      'class' => ['search-page__keys-submit'],
+    ],
+  ];
+  $container['keys'] = $form['keys'];
+  $container['submit_search'] = $form['submit_search'];
+  $form['keys_submit'] = $container;
+  unset($form['keys'], $form['submit_search']);
+}
+
+/**
+ * Add classes to language block.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_preprocess_links__language_block(array &$variables) {
+  if (!empty($links = $variables['links'])) {
+    foreach ($links as $key => $link) {
+      $variables['links'][$key]['link']['#options']['attributes']['class'][] = 'language-menu-list-item__link';
+    }
+  }
+}
+
+/**
+ * Add floating class to site branding so on mobile it will lay on top of hero.
+ *
+ * Add alt and title to site branding mobile.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_preprocess_block__sitebranding_mobile(array &$variables) {
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if (!empty($node)) {
+    $variables['attributes']['class'][] = 'logo--floating';
+  }
+  /**
+   * @todo Maybe we should add this to site settings?
+   */
+  $variables['alt'] = 'Home';
+  $variables['title'] = 'Home';
+}
+
+/**
+ * Modify meta menu, by adding classes and adding a headline.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_preprocess_menu__meta_menu(array &$variables) {
+  $region = $variables['attributes']['region'] ?? '';
+  // Based on region we will define special classes.
+  if ($region === 'header') {
+    $variables['attributes']['class'][] = 'meta-menu-list';
+  }
+  elseif ($region === 'burgermenu') {
+    $variables['attributes']['class'][] = 'burger-menu-list';
+    $variables['attributes']['class'][] = 'burger-menu-list--highlighted';
+  }
+  if (!empty($items = $variables['items'])) {
+    // Based on region we will add a "headline" to the menu.
+    if ($region === 'burgermenu') {
+      $headline = [
+        'headline' => [
+          'title' => t('Highlighted', ['context' => 'premium']),
+          'attributes' => (new Attribute)->addClass('burger-menu-list__label'),
+        ],
+      ];
+      $variables['items'] = $headline + $variables['items'];
+    }
+    foreach ($items as $key => $item) {
+      if ($region === 'header') {
+        $variables['items'][$key]['attributes']->addClass('meta-menu-item');
+        $variables['items'][$key]['link_options']['class'][] = 'meta-menu-item__link';
+      }
+      elseif ($region === 'burgermenu') {
+        $variables['items'][$key]['attributes']->addClass('burger-menu-list-item');
+        $variables['items'][$key]['link_options']['class'][] = 'burger-menu-list-item__link';
+      }
+    }
+  }
+}
+
+/**
+ * Modify the main menu in burger menu.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_preprocess_menu__main__burgermenu(array &$variables) {
+  $variables['attributes']['class'][] = 'burger-menu-list';
+  $variables['next_level_attributes'] = (new Attribute)
+    ->addClass('burger-menu-list')
+    ->addClass('burger-menu-list--secondary');
+
+  if (!empty($items = $variables['items'])) {
+    $headline = [
+      'headline' => [
+        'title' => t('Menu', ['context' => 'premium']),
+        'attributes' => (new Attribute)->addClass('burger-menu-list__label'),
+      ],
+    ];
+    $variables['items'] = $headline + $variables['items'];
+    foreach ($items as $key => $item) {
+      $attributes = $variables['items'][$key]['attributes'];
+      $attributes->addClass('burger-menu-list-item');
+      $attributes->addClass('js-burger-menu-list-item');
+      $variables['items'][$key]['link_options']['class'][] = 'burger-menu-list-item__link';
+
+      // Add same attributes to items under below for next level.
+      if (!empty($item['below'])) {
+        $variables['items'][$key]['svg_icon']['name'] = 'arrow-line-down';
+        $variables['items'][$key]['svg_icon']['clickAction'] = 'triggerSubNavigation($event)';
+        $variables['items'][$key]['below'] = $headline + $variables['items'][$key]['below'];
+        foreach ($variables['items'][$key]['below'] as $key_below => $below_value) {
+          if ($key_below === 'headline') {
+            continue;
+          }
+          $attributes = $variables['items'][$key]['below'][$key_below]['attributes'];
+          $attributes->addClass('burger-menu-list-item');
+          $variables['items'][$key]['below'][$key_below]['link_options']['class'][] = 'burger-menu-list-item__link';
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Add region to blocks.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_preprocess_block(array &$variables) {
+  if (isset($variables['elements']['#id'])) {
+    $region = Block::load($variables['elements']['#id'])->getRegion();
+    $variables['content']['#attributes']['region'] = $region;
+  }
+}
+
+/**
+ * Add contact information to burger menu.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_preprocess_region__burgermenu(array &$variables) {
+  $variables['contacts'] = [];
+  // Load contacts from site settings if it exists.
+  $variables['#cache']['tags'][] = 'site_settings_bundle:contact_info';
+  $contact_infos = $variables['site_settings']['contact_information']['contact_info'] ?? [];
+  if (!empty($contact_infos) && is_array($contact_infos)) {
+    foreach ($contact_infos as $contact_info) {
+      $variables['contacts'][] = [
+        'title' => $contact_info['field_name'] ?? '',
+        'address' => $contact_info['field_address'] ?? '',
+        'zip' => $contact_info['field_zip'] ?? '',
+        'city' => $contact_info['field_city'] ?? '',
+        'cvr' => $contact_info['field_cvr'] ?? '',
+        'email' => $contact_info['field_email'] ?? '',
+        'telephone' => $contact_info['field_telephone'] ?? '',
+      ];
+    }
+  }
+}
+
+/**
+ * Add hero if its a node and footer to all pages.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_preprocess_page(array &$variables) {
+  if (isset($variables['node'])) {
+    /** @var \Drupal\node\Entity\Node $node */
+    if (!empty($node = $variables['node'])) {
+      $variables['hero'] = _create_hero($node, [
+        'title' => 'title',
+        'background_image' => 'field_header_background',
+        'text_color' => 'field_header_text_color',
+        'orientation' => 'field_header_orientation',
+        'color_theme' => 'field_header_color_theme',
+        'teaser' => 'field_header_subline',
+        'cta' => 'field_header_cta',
+      ]);
+    }
+  }
+  $variables['footer'] = _create_footer($variables);
+}
+
+/**
+ * Modify and change template variables.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_preprocess_node__inline_navigation(array &$variables) {
+  /** @var \Drupal\node\Entity\Node $node */
+  $node = $variables['node'];
+  $image_uri = '';
+  $variables['image_container_attribute'] = new Attribute();
+  if ($node->hasField('field_header_background') && !$node->get('field_header_background')->isEmpty()) {
+    /** @var \Drupal\media\Entity\Media $media */
+    $media = $node->get('field_header_background')->entity;
+    if (!empty($media) && $media->hasField('field_media_image')) {
+      /** @var \Drupal\file\Entity\File $file */
+      if (!empty($file = $media->get('field_media_image')->entity)) {
+        $image_uri = $file->getFileUri() ?? '';
+      }
+    }
+  }
+
+  if (!empty($image_uri)) {
+    $variables['image'] = [
+      'title' => '',
+      'alt' => '',
+      'url' => file_create_url($image_uri),
+      'uri' => $image_uri,
+    ];
+  }
+
+  if ($node->hasField('field_header_subline') && !$node->get('field_header_subline')->isEmpty()) {
+    $variables['inline_navigation_teaser'] = strip_tags($node->get('field_header_subline')->value);
+  }
+}
+
+/**
+ * Add data-src if image have a lazyload class.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_preprocess_image(array &$variables) {
+  if (isset($variables['attributes']['class'])) {
+    $classes = $variables['attributes']['class'];
+    $implode = implode(' ', $classes);
+    $explode = explode(' ', $implode);
+    if (!empty($explode) && in_array('lazyload', $explode, TRUE)) {
+      $variables['attributes']['data-src'] = $variables['attributes']['src'];
+      $variables['attributes']['data-query-obj'] = '{}';
+      unset($variables['attributes']['src']);
+    }
+  }
+}
+
+/**
+ * Add object position to img element for responsive image.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_preprocess_responsive_image(array &$variables) {
+  // Add lazyload for responsive images.
+  if (!empty($variables['attributes']['class']) && in_array('lazyload', $variables['attributes']['class'])) {
+    foreach ($variables['sources'] as $key => $source) {
+      if (!$source instanceof Attribute) {
+        continue;
+      }
+      $variables['sources'][$key]->setAttribute('data-srcset', $source->offsetGet('srcset')->value());
+      $variables['sources'][$key]->removeAttribute('srcset');
+    }
+  }
+  if (isset($variables['img_element']) && isset($variables['uri'])) {
+    $uri = $variables['uri'];
+    /** @var \Drupal\dds_media\MediaHelper $service */
+    $service = \Drupal::service('dds_media.media_helper');
+    $data = $service->get_media_focal_point($uri, file_create_url($uri));
+    if ($data['active']) {
+      $variables['img_element']['#attributes']['style'] = 'object-position:' . $data['x'] . '% ' . $data['y'] . '%;';
+    }
+  }
+}
+
+/**
+ * Add site branding and footer to maintenance page.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_preprocess_maintenance_page(array &$variables) {
+  /** @var \Drupal\Core\Entity\EntityTypeManager $entity_type_manager */
+  $entity_type_manager = \Drupal::entityTypeManager();
+  $sitebranding = Block::load('sitebranding');
+  $sitebranding_mobile = Block::load('sitebranding_mobile');
+  if (!empty($sitebranding)) {
+    $variables['sitebranding'] = $entity_type_manager->getViewBuilder('block')->view($sitebranding);
+  }
+  if (!empty($sitebranding_mobile)) {
+    $variables['sitebranding_mobile'] = $entity_type_manager->getViewBuilder('block')->view($sitebranding_mobile);
+  }
+  $variables['page_title'] = $variables['page']['#title'];
+  $variables['footer'] = _create_footer($variables);
+}
+
+/**
+ * Add alt and title to site branding.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_preprocess_block__sitebranding(array &$variables) {
+  /**
+   * @todo Maybe we should add this to site settings?
+   */
+  $variables['alt'] = 'Home';
+  $variables['title'] = 'Home';
+}
+
+/**
+ * Add theme information to cooke info.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_preprocess_dds_cookieinfo(array &$variables) {
+  $variables['section_attributes']->addClass('theme')
+    ->addClass('section')
+    ->addClass('theme-secondary');
+}
+
+/**
+ * Input preprocess for adding checkbox, radio or input classes.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_preprocess_input(array &$variables) {
+  $type = $variables['element']['#type'];
+  if ($type === 'checkbox') {
+    $variables['attributes']['class'][] = 'checkbox';
+  }
+  if ($type === 'radio') {
+    $variables['attributes']['class'][] = 'radio';
+  }
+  $excluded_types = [
+    'search',
+    'textfield',
+    'password',
+    'datetime',
+    'datetime-local',
+    'date',
+    'month',
+    'time',
+    'week',
+    'number',
+    'email',
+    'url',
+    'tel',
+    'color',
+  ];
+  if (in_array($type, $excluded_types, TRUE)) {
+    $variables['attributes']['class'][] = 'input';
+  }
+}
+
+/**
+ * Textarea preprocess.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_preprocess_textarea(array &$variables) {
+  $variables['attributes']['class'][] = 'textarea';
+}
+
+/**
+ * Add ability to make the breadcrumb to float above the hero and schema.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_preprocess_breadcrumb(array &$variables) {
+  $variables['#cache']['contexts'][] = 'url';
+
+  $breadcrumb_json_data = [
+    '@context' => 'http://schema.org',
+    '@type' => 'BreadcrumbList',
+    'itemListElement' => [],
+  ];
+  if (!empty($variables['links'])) {
+    /** @var \Drupal\Core\Link $item */
+    foreach ($variables['links'] as $key => $item) {
+      $breadcrumb_json_data['itemListElement'] = [
+        '@type' => 'ListItem',
+        'position' => $key,
+        'item' => [
+          '@id' => $item->getUrl()->toString(),
+          'name' => $item->getText(),
+        ],
+      ];
+    }
+  }
+  $variables['breadcrumb_json_data'] = [
+    '#type' => 'html_tag',
+    '#tag' => 'script',
+    '#attributes' => [
+      'type' => 'application/ld+json',
+    ],
+    '#value' => json_encode($breadcrumb_json_data),
+  ];
+  $variables['disable'] = FALSE;
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if ($node instanceof NodeInterface) {
+    $variables['disable'] = $node->hasField('field_hide_breadcrumb') && (int)$node->get('field_hide_breadcrumb')->value === 1;
+  }
+
+  /** @var \Drupal\Core\Template\Attribute $attribute */
+  $attribute = new Attribute();
+  $attribute->addClass('container');
+  $variables['items_attributes'] = (!empty($variables['items_attributes']) ? $variables['items_attributes'] : $attribute);
+}
+
+/**
+ * Search results.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_preprocess_search_page__results(array &$variables) {
+  if (!empty($variables['results'])) {
+    foreach ($variables['results'] as &$result) {
+      if (isset($result['#image'])) {
+        $image = $result['#image'];
+        $result['#image'] = [
+          'title' => $image['#attributes']['alt'],
+          'alt' => $image['#attributes']['alt'],
+          'url' => file_create_url($image['#uri']),
+          'uri' => $image['#uri'],
+        ];
+      }
+    }
+  }
+}
+
+/**
+ * Create hero.
+ *
+ * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+ *   Could eg. be a node or a block.
+ * @param array $fields
+ *   Mapping array containing fields from the entity.
+ *
+ * @return array
+ *   Contains template variables for building hero.
+ */
+function _create_hero(ContentEntityInterface $entity, array $fields): array {
+  $hero_attributes = new Attribute();
+  $section_attributes = new Attribute();
+  $content_attributes = new Attribute();
+  $background_image_uri = '';
+  $text_color = 'dark';
+  $orientation = 'left';
+  $color_theme = '';
+  $title = '';
+  $video_oembed = ['url' => 'null', 'oEmbed' => 'null'];
+
+  if (isset($fields['background_image']) && $entity->hasField($fields['background_image']) && !$entity->get($fields['background_image'])->isEmpty()) {
+    /** @var \Drupal\media\Entity\Media $media */
+    $media = $entity->get($fields['background_image'])->entity;
+    if (!empty($media)) {
+      if ($media->bundle() === 'dds_cdn_video' || $media->bundle() === 'dds_video') {
+        if (Drupal::hasService('dds_media.media_helper')) {
+          /** @var \Drupal\dds_media\MediaHelper $service */
+          $service = \Drupal::service('dds_media.media_helper');
+          $video_data = $service->get_video_data_from_media($media);
+          $video_oembed['url'] = $video_data['url'];
+          $video_oembed['oEmbed'] = ['html' => $video_data['player']];
+          $background_image_uri = $video_data['image']['uri'];
+        }
+      }
+      elseif ($media->hasField('field_media_image')) {
+        /** @var \Drupal\file\Entity\File $file */
+        if (!empty($file = $media->get('field_media_image')->entity)) {
+          $background_image_uri = $file->getFileUri() ?? '';
+        }
+      }
+      elseif ($media->hasField('field_media_video_embed')) {
+        if (Drupal::hasService('dds_media.media_helper')) {
+          /** @var \Drupal\dds_media\MediaHelper $service */
+          $service = \Drupal::service('dds_media.media_helper');
+          $video_data = $service->get_video_data($media->get('field_media_video_embed')->value);
+          $video_oembed['url'] = $video_data['url'];
+          $video_oembed['oEmbed'] = ['html' => $video_data['player']];
+          $background_image_uri = $video_data['image']['uri'];
+        }
+      }
+    }
+  }
+
+  if (isset($fields['text_color']) && $entity->hasField($fields['text_color']) && !$entity->get($fields['text_color'])->isEmpty()) {
+    $text_color = $entity->get($fields['text_color'])->value;
+  }
+
+  if (isset($fields['orientation']) && $entity->hasField($fields['orientation']) && !$entity->get($fields['orientation'])->isEmpty()) {
+    $orientation = $entity->get($fields['orientation'])->value;
+  }
+
+  if (isset($fields['color_theme']) && $entity->hasField($fields['color_theme']) && !$entity->get($fields['color_theme'])->isEmpty()) {
+    $color_theme = $entity->get($fields['color_theme'])->value;
+  }
+
+  $section_attributes->addClass('section')
+    ->addClass('section--no-spacing');
+
+  if (!empty($color_theme)) {
+    $section_attributes->addClass('theme');
+    $section_attributes->addClass('theme-' . $color_theme);
+  }
+
+  $attributes = $hero_attributes
+    ->addClass(($orientation !== 'left' ? 'hero--' . $orientation : ''))
+    ->addClass($text_color != 'dark' ? 'hero--inverted' : '');
+
+  if (isset($fields['title']) && $entity->hasField($fields['title']) && !$entity->get($fields['title'])->isEmpty()) {
+    $title = $entity->get($fields['title'])->value;
+  }
+
+  $hero = [
+    'attributes' => $attributes,
+    'position' => $orientation,
+    'title' => $title,
+    'video_oembed' => json_encode($video_oembed),
+    'cta' => [],
+    'section_attributes' => $section_attributes,
+    'content_attributes' => $content_attributes,
+  ];
+
+  if (isset($fields['teaser']) && $entity->hasField($fields['teaser']) && !$entity->get($fields['teaser'])->isEmpty()) {
+    $hero['teaser'] = ['#markup' => $entity->get($fields['teaser'])->value];
+  }
+
+  if (isset($fields['cta']) && $entity->hasField($fields['cta']) && !$entity->get($fields['cta'])->isEmpty()) {
+    $cta = $entity->get($fields['cta'])->getValue();
+    $hero['cta'] = _modify_cta(reset($cta));
+  }
+
+  if (!empty($background_image_uri)) {
+    $hero['background_image'] = [
+      'title' => '',
+      'alt' => '',
+      'url' => file_create_url($background_image_uri),
+      'uri' => $background_image_uri,
+    ];
+  }
+
+  return $hero;
+}
+
+/**
+ * Create footer.
+ *
+ * @param array $variables
+ *   Template variables.
+ *
+ * @return array
+ *   Cols with information like headline and content.
+ */
+function _create_footer(array $variables): array {
+  $footer_data = $variables['site_settings']['site_settings']['footer'] ?? [];
+
+  /* @var \Drupal\Core\Template\Attribute $attributes */
+  $attributes = new Attribute();
+  $attributes->addClass('section');
+  $attributes->addClass('theme');
+  $attributes->addClass('theme-primary');
+
+  $footer = [
+    'attributes' => $attributes,
+    'cols' => [],
+  ];
+
+  // Add header and content for left, center and right to footer.
+  $footer['cols'][] = [
+    'headline' => $footer_data['field_header_left'] ?? '',
+    'content' => check_markup($footer_data['field_content_left']['value'] ?? '', $footer_data['field_content_left']['format'] ?? NULL),
+  ];
+  $footer['cols'][] = [
+    'headline' => $footer_data['field_header_center'] ?? '',
+    'content' => check_markup($footer_data['field_content_center']['value'] ?? '', $footer_data['field_content_center']['format'] ?? NULL),
+  ];
+  $footer['cols'][] = [
+    'headline' => $footer_data['field_header_right'] ?? '',
+    'content' => check_markup($footer_data['field_content_right']['value'] ?? '', $footer_data['field_content_right']['format'] ?? NULL),
+  ];
+
+  return $footer;
+}
+
+/**
+ * Change and build the CTA, you can pass attributes directly to the CTA.
+ *
+ * @param array $cta
+ *   Link field there contains uri and more eg. target_blank.
+ * @param \Drupal\Core\Template\Attribute $cta_attributes
+ *   Drupals template attribute.
+ *
+ * @return array
+ *   CTA with attributes.
+ */
+function _modify_cta(array $cta, Attribute $cta_attributes = NULL): array {
+  /** @var \Drupal\Core\Template\Attribute $cta_attributes */
+  if (is_null($cta_attributes)) {
+    $cta_attributes = new Attribute();
+  }
+  $cta['url'] = Url::fromUri($cta['uri'])->toString();
+  if (isset($cta['target_blank']) && (int)$cta['target_blank'] === 1) {
+    $cta_attributes->setAttribute('target', 'blank');
+  }
+  $cta['attributes'] = $cta_attributes;
+  return $cta;
+}

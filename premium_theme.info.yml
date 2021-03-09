@@ -1,0 +1,9 @@
+name: Drupal premium theme
+type: theme
+description: 'Drupal premium theme'
+package: Premium
+version: 2.0.0
+core_version_requirement: ^8.8 || ^9
+base theme: stable
+libraries:
+  - premium_theme/lazyload
