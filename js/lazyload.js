@@ -1,7 +1,9 @@
 import LazyLoad from 'novicell-lazyload';
 import debounce from 'lodash/debounce';
 
-const lazy = new LazyLoad();
+const lazy = new LazyLoad({
+  includeWebp: true,
+});
 
 document.addEventListener('lazybeforeunveil', (event) => {
   lazy.lazyLoad(event);

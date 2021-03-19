@@ -1,7 +1,5 @@
 <?php
 
-use Drupal\Core\Template\Attribute;
-
 /**
  * Button layout block preprocess.
  *
@@ -68,17 +66,15 @@ function premium_theme_preprocess_layout_block__slideshow(array &$variables) {
  */
 function premium_theme_preprocess_layout_block__accordion(array &$variables) {
   $entity = $variables['entity'];
-  if ($entity->hasField('field_accordion_items')) {
-    $items = $entity->get('field_accordion_items');
-    if (!empty($items)) {
-      foreach ($items as $item) {
-        $item = $item->entity;
-        $variables['items'][] = [
-          'id' => $item->id(),
-          'headline' => $item->hasField('field_accordion_item_headline') ? $item->get('field_accordion_item_headline')->value :'',
-          'text' => ['#markup' => $item->hasField('field_accordion_item_text') ? $item->get('field_accordion_item_text')->value : ''],
-        ];
-      }
+  $items = $entity->get('field_accordion_items');
+  if (!empty($items)) {
+    foreach ($items as $item) {
+      $item = $item->entity;
+      $variables['items'][] = [
+        'id' => $item->id(),
+        'headline' => $item->get('field_accordion_item_headline')->value,
+        'text' => ['#markup' => $item->get('field_accordion_item_text')->value],
+      ];
     }
   }
 }
@@ -110,9 +106,9 @@ function premium_theme_preprocess_layout_block__hero(array &$variables) {
 function premium_theme_preprocess_layout_block__video(array &$variables) {
   $video_oembed = ['url' => 'null', 'oEmbed' => 'null'];
   $video_media = $variables['fields']['field_video_media'];
-  if (!empty($video_media) && \Drupal::hasService('dds_media.media_helper')) {
-    /** @var \Drupal\dds_media\MediaHelper $service */
-    $service = \Drupal::service('dds_media.media_helper');
+  if (!empty($video_media) && Drupal::hasService('dds_media.media_helper')) {
+    /** @var Drupal\dds_media\MediaHelper $service */
+    $service = Drupal::service('dds_media.media_helper');
     $video_data = $service->get_video_data_from_media($video_media->getEntity());
     $video_oembed['url'] = $video_data['url'];
     $video_oembed['oEmbed'] = ['html' => $video_data['player']];
@@ -177,46 +173,5 @@ function premium_theme_preprocess_layout_block__appetizer(array &$variables) {
   }
   else {
     $variables['image_style'] = 'appetiser';
-  }
-}
-
-/**
- * USP item preprocess.
- *
- * @param array $variables
- *   Template variables.
- */
-function premium_theme_preprocess_layout_block__usp_item(array &$variables) {
-  $item = $variables['entity'];
-
-  if ($item->hasField('field_headline') && !$item->field_headline->isEmpty()) {
-    $variables['title'] = ['#markup' => $item->field_headline->value];
-  }
-
-  if ($item->hasField('field_description') && !$item->field_description->isEmpty()) {
-    $variables['description'] = ['#markup' => $item->field_description->value];
-  }
-
-  if ($item->hasField('field_icon') && !$item->field_icon->isEmpty()) {
-    $file = $item->field_icon->entity;
-
-    if ($file) {
-      $image = \Drupal::service('image.factory')->get($file->getFileUri());
-    }
-
-    if (!empty($image)) {
-      // Check if image is SVG or similar with no scale defined.
-      if ($file->getMimeType() != 'image/svg+xml') {
-        $variables['image'] = [
-          '#theme' => 'image_style',
-          '#height' => 70,
-          '#style_name' => 'thumbnail',
-          '#uri' => $file->getFileUri(),
-        ];
-      }
-      else {
-        $variables['image'] = $variables['content']['field_image'];
-      }
-    }
   }
 }

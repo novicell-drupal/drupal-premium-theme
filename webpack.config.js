@@ -2,7 +2,7 @@ const glob = require('glob');
 const path = require('path');
 const argv = require('minimist')(process.argv.slice(2));
 const TerserPlugin = require('terser-webpack-plugin');
-const BundleAnalyzer = require('webpack-bundle-analyzer');
+const BundleAnalyzer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const ESLintPlugin = require('eslint-webpack-plugin');
 
 const mode = argv.mode || 'development';
@@ -23,9 +23,9 @@ const allEntries = () => {
   return manyEntries;
 };
 
-const minimizers = [];
+const minimizer = [];
 if (mode === 'production') {
-  minimizers.push(new TerserPlugin());
+  minimizer.push(new TerserPlugin());
 }
 
 const plugins = [];
@@ -33,7 +33,7 @@ plugins.push(new ESLintPlugin({
   fix: true,
 }));
 if (mode !== 'production') {
-  plugins.push(new BundleAnalyzer.BundleAnalyzerPlugin({
+  plugins.push(new BundleAnalyzer({
     analyzerMode: 'static',
     logLevel: 'silent',
     openAnalyzer: false,
@@ -45,7 +45,7 @@ module.exports = {
   entry: allEntries(),
   optimization: {
     splitChunks: false,
-    minimizer: minimizers
+    minimizer: minimizer
   },
   plugins: plugins,
   module: {

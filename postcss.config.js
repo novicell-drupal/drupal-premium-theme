@@ -6,6 +6,7 @@ module.exports = {
     inline: false,
   } : false,
   plugins: [
+    /* eslint-disable global-require */
     require('stylelint')({
       ignoreFiles: [
         'node_modules/**/*.css',
@@ -38,5 +39,6 @@ module.exports = {
       clearReportedMessages: true,
       throwError: false,
     }),
+    /* eslint-enable global-require */
   ],
 };
