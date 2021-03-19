@@ -2,7 +2,7 @@
 Base theme for our premium sites.
 So be careful when making changes/fixing bugs, this theme can be updated on already built sites.
 
-# JavaScript and CSS (PostCSS)
+# JavaScript and CSS (PostCSS) for development.
 Run ```npm ci``` to install.
 
 Commands to build to dist folder:
