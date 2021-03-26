@@ -74,23 +74,6 @@ function premium_theme_preprocess_links__language_block(array &$variables) {
 }
 
 /**
- * Add floating class to site branding so on mobile it will lay on top of hero.
- *
- * Add alt and title to site branding mobile.
- *
- * @param array $variables
- *   Template variables.
- */
-function premium_theme_preprocess_block__sitebranding_mobile(array &$variables) {
-  $variables['alt'] = 'Home';
-  $variables['title'] = 'Home';
-  $node = Drupal::routeMatch()->getParameter('node');
-  if (!empty($node)) {
-    $variables['attributes']['class'][] = 'logo--floating';
-  }
-}
-
-/**
  * Modify meta menu, by adding classes and adding a headline.
  *
  * @param array $variables
@@ -183,6 +166,7 @@ function premium_theme_preprocess_menu__main__burgermenu(array &$variables) {
 function premium_theme_preprocess_block(array &$variables) {
   if (isset($variables['elements']['#id'])) {
     $block = Block::load($variables['elements']['#id']);
+
     if (!is_null($block)) {
       $region = $block->getRegion();
       $variables['content']['#attributes']['region'] = $region;
@@ -211,7 +195,6 @@ function premium_theme_preprocess_page(array &$variables) {
       ]);
     }
   }
-  $variables['footer'] = _create_footer($variables);
 }
 
 /**
@@ -224,7 +207,7 @@ function premium_theme_preprocess_node__inline_navigation(array &$variables) {
   /** @var \Drupal\node\Entity\Node $node */
   $node = $variables['node'];
   $image_uri = '';
-  $variables['image_container_attribute'] = new Attribute();
+
   if ($node->hasField('field_header_background') && !$node->get('field_header_background')->isEmpty()) {
     /** @var Drupal\media\Entity\Media $media */
     $media = $node->get('field_header_background')->entity;
@@ -246,7 +229,7 @@ function premium_theme_preprocess_node__inline_navigation(array &$variables) {
   }
 
   if ($node->hasField('field_header_subline') && !$node->get('field_header_subline')->isEmpty()) {
-    $variables['inline_navigation_teaser'] = strip_tags($node->get('field_header_subline')->value);
+    $variables['teaser'] = strip_tags($node->get('field_header_subline')->value);
   }
 }
 
@@ -261,6 +244,7 @@ function premium_theme_preprocess_image(array &$variables) {
     $classes = $variables['attributes']['class'];
     $implode = implode(' ', $classes);
     $explode = explode(' ', $implode);
+
     if (!empty($explode) && in_array('lazyload', $explode, TRUE)) {
       $variables['attributes']['data-src'] = $variables['attributes']['src'];
       $variables['attributes']['data-query-obj'] = '{}';
@@ -282,6 +266,7 @@ function premium_theme_preprocess_responsive_image(array &$variables) {
       if (!$source instanceof Attribute) {
         continue;
       }
+
       $variables['sources'][$key]->setAttribute('data-srcset', $source->offsetGet('srcset')->value());
       $variables['sources'][$key]->removeAttribute('srcset');
     }
@@ -295,18 +280,15 @@ function premium_theme_preprocess_responsive_image(array &$variables) {
  *   Template variables.
  */
 function premium_theme_preprocess_maintenance_page(array &$variables) {
-  /** @var Drupal\Core\Entity\EntityTypeManager $entity_type_manager */
-  $entity_type_manager = \Drupal::entityTypeManager();
-  $sitebranding = Block::load('sitebranding');
-  $sitebranding_mobile = Block::load('sitebranding_mobile');
-  if (!is_null($sitebranding)) {
-    $variables['sitebranding'] = $entity_type_manager->getViewBuilder('block')->view($sitebranding);
+  $site_branding = Block::load('site_branding');
+
+  if (!is_null($site_branding)) {
+    /** @var Drupal\Core\Entity\EntityTypeManager $entity_type_manager */
+    $entity_type_manager = \Drupal::entityTypeManager();
+    $variables['site_branding'] = $entity_type_manager->getViewBuilder('block')->view($site_branding);
   }
-  if (!is_null($sitebranding_mobile)) {
-    $variables['sitebranding_mobile'] = $entity_type_manager->getViewBuilder('block')->view($sitebranding_mobile);
-  }
+
   $variables['page_title'] = $variables['page']['#title'];
-  $variables['footer'] = _create_footer($variables);
 }
 
 /**
@@ -315,7 +297,7 @@ function premium_theme_preprocess_maintenance_page(array &$variables) {
  * @param array $variables
  *   Template variables.
  */
-function premium_theme_preprocess_block__sitebranding(array &$variables) {
+function premium_theme_preprocess_block__site_branding(array &$variables) {
   $variables['alt'] = 'Home';
   $variables['title'] = 'Home';
 }
@@ -327,7 +309,7 @@ function premium_theme_preprocess_block__sitebranding(array &$variables) {
  *   Template variables.
  */
 function premium_theme_preprocess_dds_cookieinfo(array &$variables) {
-  $variables['section_attributes']->addClass('theme')
+  $variables['attributes']->addClass('theme')
     ->addClass('section')
     ->addClass('theme-secondary');
 }
@@ -340,12 +322,15 @@ function premium_theme_preprocess_dds_cookieinfo(array &$variables) {
  */
 function premium_theme_preprocess_input(array &$variables) {
   $type = $variables['element']['#type'];
+
   if ($type === 'checkbox') {
     $variables['attributes']['class'][] = 'checkbox';
   }
+
   if ($type === 'radio') {
     $variables['attributes']['class'][] = 'radio';
   }
+
   $excluded_types = [
     'search',
     'textfield',
@@ -362,6 +347,7 @@ function premium_theme_preprocess_input(array &$variables) {
     'tel',
     'color',
   ];
+
   if (in_array($type, $excluded_types, TRUE)) {
     $variables['attributes']['class'][] = 'input';
   }
@@ -391,6 +377,7 @@ function premium_theme_preprocess_breadcrumb(array &$variables) {
     '@type' => 'BreadcrumbList',
     'itemListElement' => [],
   ];
+
   if (!empty($variables['links'])) {
     /** @var \Drupal\Core\Link $item */
     foreach ($variables['links'] as $key => $item) {
@@ -416,6 +403,7 @@ function premium_theme_preprocess_breadcrumb(array &$variables) {
 
   $variables['disable'] = FALSE;
   $node = Drupal::routeMatch()->getParameter('node');
+
   if ($node instanceof NodeInterface) {
     $variables['disable'] = $node->hasField('field_hide_breadcrumb') && $node->get('field_hide_breadcrumb')->value == 1;
   }
@@ -546,7 +534,15 @@ function _create_hero(ContentEntityInterface $entity, array $fields): array {
 
   if (isset($fields['cta']) && $entity->hasField($fields['cta']) && !$entity->get($fields['cta'])->isEmpty()) {
     $cta = $entity->get($fields['cta'])->getValue();
-    $hero['cta'] = _modify_cta(reset($cta));
+    if (isset($cta['uri'], $cta['title'])) {
+      $hero['cta']['title'] = $cta['title'];
+      $hero['cta']['url'] = Url::fromUri($cta['uri'])->toString();
+      if (isset($cta['target_blank']) && (int) $cta['target_blank'] === 1) {
+        $cta_attributes = new Attribute();
+        $cta_attributes->setAttribute('target', 'blank');
+        $hero['cta']['attributes'] = $cta_attributes;
+      }
+    }
   }
 
   if (!empty($background_image_uri)) {
@@ -559,67 +555,4 @@ function _create_hero(ContentEntityInterface $entity, array $fields): array {
   }
 
   return $hero;
-}
-
-/**
- * Create footer.
- *
- * @param array $variables
- *   Template variables.
- *
- * @return array
- *   Cols with information like headline and content.
- */
-function _create_footer(array $variables): array {
-  $footer_data = $variables['site_settings']['site_settings']['footer'] ?? [];
-
-  $attributes = new Attribute();
-  $attributes->addClass('section');
-  $attributes->addClass('theme');
-  $attributes->addClass('theme-primary');
-
-  $footer = [
-    'attributes' => $attributes,
-    'cols' => [],
-  ];
-
-  // Add header and content for left, center and right to footer.
-  $footer['cols'][] = [
-    'headline' => $footer_data['field_header_left'] ?? '',
-    'content' => check_markup($footer_data['field_content_left']['value'] ?? '', $footer_data['field_content_left']['format'] ?? NULL),
-  ];
-  $footer['cols'][] = [
-    'headline' => $footer_data['field_header_center'] ?? '',
-    'content' => check_markup($footer_data['field_content_center']['value'] ?? '', $footer_data['field_content_center']['format'] ?? NULL),
-  ];
-  $footer['cols'][] = [
-    'headline' => $footer_data['field_header_right'] ?? '',
-    'content' => check_markup($footer_data['field_content_right']['value'] ?? '', $footer_data['field_content_right']['format'] ?? NULL),
-  ];
-
-  return $footer;
-}
-
-/**
- * Change and build the CTA, you can pass attributes directly to the CTA.
- *
- * @param array $cta
- *   Link field there contains uri and more eg. target_blank.
- * @param \Drupal\Core\Template\Attribute|null $cta_attributes
- *   Drupals template attribute.
- *
- * @return array
- *   CTA with attributes.
- */
-function _modify_cta(array $cta, Attribute $cta_attributes = NULL): array {
-  /** @var Drupal\Core\Template\Attribute $cta_attributes */
-  if (is_null($cta_attributes)) {
-    $cta_attributes = new Attribute();
-  }
-  $cta['url'] = Url::fromUri($cta['uri'])->toString();
-  if (isset($cta['target_blank']) && (int) $cta['target_blank'] === 1) {
-    $cta_attributes->setAttribute('target', 'blank');
-  }
-  $cta['attributes'] = $cta_attributes;
-  return $cta;
 }

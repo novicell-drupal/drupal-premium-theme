@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\Core\Url;
+
 /**
  * Button layout block preprocess.
  *
@@ -8,14 +10,26 @@
  */
 function premium_theme_preprocess_layout_block__button(array &$variables) {
   $entity = $variables['entity'];
+
   if ($entity->hasField('field_button') && !$entity->get('field_button')->isEmpty()) {
     $cta = $entity->get('field_button')->getValue();
-    /** @var \Drupal\Core\Template\Attribute $attribute */
-    $attribute = new Attribute();
-    if ($entity->hasField('field_button_alignment') && !$entity->get('field_button_alignment')->isEmpty()) {
-      $attribute->addClass('button--' . $entity->get('field_button_alignment')->value);
+
+    if (isset($cta['uri'], $cta['title'])) {
+      $variables['cta']['title'] = $cta['title'];
+      $variables['cta']['url'] = Url::fromUri($cta['uri'])->toString();
+
+      /** @var \Drupal\Core\Template\Attribute $cta_attributes */
+      $cta_attributes = new Attribute();
+      if ($entity->hasField('field_button_alignment') && !$entity->get('field_button_alignment')->isEmpty()) {
+        $cta_attributes->addClass('button--' . $entity->get('field_button_alignment')->value);
+      }
+
+      if (isset($cta['target_blank']) && (int) $cta['target_blank'] === 1) {
+        $cta_attributes->setAttribute('target', 'blank');
+      }
+
+      $variables['cta']['attributes'] = $cta_attributes;
     }
-    $variables['cta'] = _modify_cta(reset($cta), $attribute);
   }
 }
 
@@ -51,6 +65,7 @@ function premium_theme_preprocess_layout_block__image(array &$variables) {
  */
 function premium_theme_preprocess_layout_block__slideshow(array &$variables) {
   $items = $variables['fields']['field_slideshow_images'];
+
   if (!empty($items)) {
     foreach ($items as $item) {
       $variables['items'][] = ['image' => $item['field_media_image']];
@@ -67,6 +82,7 @@ function premium_theme_preprocess_layout_block__slideshow(array &$variables) {
 function premium_theme_preprocess_layout_block__accordion(array &$variables) {
   $entity = $variables['entity'];
   $items = $entity->get('field_accordion_items');
+
   if (!empty($items)) {
     foreach ($items as $item) {
       $item = $item->entity;
@@ -106,6 +122,7 @@ function premium_theme_preprocess_layout_block__hero(array &$variables) {
 function premium_theme_preprocess_layout_block__video(array &$variables) {
   $video_oembed = ['url' => 'null', 'oEmbed' => 'null'];
   $video_media = $variables['fields']['field_video_media'];
+
   if (!empty($video_media) && Drupal::hasService('dds_media.media_helper')) {
     /** @var Drupal\dds_media\MediaHelper $service */
     $service = Drupal::service('dds_media.media_helper');
@@ -113,8 +130,8 @@ function premium_theme_preprocess_layout_block__video(array &$variables) {
     $video_oembed['url'] = $video_data['url'];
     $video_oembed['oEmbed'] = ['html' => $video_data['player']];
   }
-  $variables['video_oembed'] = json_encode($video_oembed);
 
+  $variables['video_oembed'] = json_encode($video_oembed);
   $layout_id = $variables['layout']['layout_id'];
   $layout_settings = $variables['layout']['settings'];
 
@@ -140,15 +157,22 @@ function premium_theme_preprocess_layout_block__video(array &$variables) {
  *   Template variables.
  */
 function premium_theme_preprocess_layout_block__appetizer(array &$variables) {
-  $variables['image_figure_attributes'] = new Attribute();
-
   $entity = $variables['entity'];
+
   if ($entity->hasField('field_appetizer_cta') && !$entity->get('field_appetizer_cta')->isEmpty()) {
     $cta = $entity->get('field_appetizer_cta')->getValue();
-    /** @var \Drupal\Core\Template\Attribute $attribute */
-    $attribute = new Attribute();
-    $attribute->addClass('button--ghost');
-    $variables['cta'] = _modify_cta(reset($cta), $attribute);
+
+    if (isset($cta['uri'], $cta['title'])) {
+      $variables['cta']['title'] = $cta['title'];
+      $variables['cta']['url'] = Url::fromUri($cta['uri'])->toString();
+
+      if (isset($cta['target_blank']) && (int) $cta['target_blank'] === 1) {
+        /** @var \Drupal\Core\Template\Attribute $cta_attributes */
+        $cta_attributes = new Attribute();
+        $cta_attributes->setAttribute('target', 'blank');
+        $variables['cta']['attributes'] = $cta_attributes;
+      }
+    }
   }
 
   $layout_id = $variables['layout']['layout_id'];
