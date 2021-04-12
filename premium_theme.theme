@@ -17,7 +17,7 @@ require_once __DIR__ . '/includes/layout-blocks.inc';
  * @param string $extension
  *   Place where we need to check for libraries.
  */
-function premium_theme_library_info_alter(array &$libraries, $extension) {
+function premium_theme_library_info_alter(array &$libraries, string $extension) {
   if ($extension === 'premium_theme') {
     $libraries['lazyload']['version'] = time();
   }
@@ -312,55 +312,6 @@ function premium_theme_preprocess_dds_cookieinfo(array &$variables) {
   $variables['attributes']->addClass('theme')
     ->addClass('section')
     ->addClass('theme-secondary');
-}
-
-/**
- * Input preprocess for adding checkbox, radio or input classes.
- *
- * @param array $variables
- *   Template variables.
- */
-function premium_theme_preprocess_input(array &$variables) {
-  $type = $variables['element']['#type'];
-
-  if ($type === 'checkbox') {
-    $variables['attributes']['class'][] = 'checkbox';
-  }
-
-  if ($type === 'radio') {
-    $variables['attributes']['class'][] = 'radio';
-  }
-
-  $excluded_types = [
-    'search',
-    'textfield',
-    'password',
-    'datetime',
-    'datetime-local',
-    'date',
-    'month',
-    'time',
-    'week',
-    'number',
-    'email',
-    'url',
-    'tel',
-    'color',
-  ];
-
-  if (in_array($type, $excluded_types, TRUE)) {
-    $variables['attributes']['class'][] = 'input';
-  }
-}
-
-/**
- * Textarea preprocess.
- *
- * @param array $variables
- *   Template variables.
- */
-function premium_theme_preprocess_textarea(array &$variables) {
-  $variables['attributes']['class'][] = 'textarea';
 }
 
 /**

@@ -2,3 +2,9 @@ lazyload:
   version: VERSION
   js:
     dist/js/lazyload.js: {}
+
+layout-builder:
+  version: VERSION
+  css:
+    theme:
+      dist/css/layout-builder.css: {}
