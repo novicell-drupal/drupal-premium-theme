@@ -186,7 +186,7 @@ function premium_theme_preprocess_page(array &$variables) {
     if (!empty($node = $variables['node'])) {
       $variables['hero'] = _create_hero($node, [
         'title' => 'title',
-        'background_image' => 'field_header_background',
+        'media' => 'field_header_background',
         'text_color' => 'field_header_text_color',
         'orientation' => 'field_header_orientation',
         'color_theme' => 'field_header_color_theme',
@@ -450,45 +450,11 @@ function _create_hero(ContentEntityInterface $entity, array $fields): array {
   $hero_attributes = new Attribute();
   $section_attributes = new Attribute();
   $content_attributes = new Attribute();
-  $background_image_uri = '';
   $text_color = 'dark';
   $orientation = 'left';
   $color_theme = '';
   $title = '';
   $video_oembed = ['url' => 'null', 'oEmbed' => 'null'];
-
-  if (isset($fields['background_image']) && $entity->hasField($fields['background_image']) && !$entity->get($fields['background_image'])->isEmpty()) {
-    /** @var Drupal\media\Entity\Media $media */
-    $media = $entity->get($fields['background_image'])->entity;
-    if (!is_null($media)) {
-      if ($media->bundle() === 'dds_cdn_video' || $media->bundle() === 'dds_video') {
-        if (Drupal::hasService('dds_media.media_helper')) {
-          /** @var Drupal\dds_media\MediaHelper $service */
-          $service = Drupal::service('dds_media.media_helper');
-          $video_data = $service->get_video_data_from_media($media);
-          $video_oembed['url'] = $video_data['url'];
-          $video_oembed['oEmbed'] = ['html' => $video_data['player']];
-          $background_image_uri = $video_data['image']['uri'];
-        }
-      }
-      elseif ($media->hasField('field_media_image')) {
-        /** @var Drupal\file\Entity\File $file */
-        if (!empty($file = $media->get('field_media_image')->entity)) {
-          $background_image_uri = $file->getFileUri() ?? '';
-        }
-      }
-      elseif ($media->hasField('field_media_video_embed')) {
-        if (Drupal::hasService('dds_media.media_helper')) {
-          /** @var Drupal\dds_media\MediaHelper $service */
-          $service = Drupal::service('dds_media.media_helper');
-          $video_data = $service->get_video_data($media->get('field_media_video_embed')->value);
-          $video_oembed['url'] = $video_data['url'];
-          $video_oembed['oEmbed'] = ['html' => $video_data['player']];
-          $background_image_uri = $video_data['image']['uri'];
-        }
-      }
-    }
-  }
 
   if (isset($fields['text_color']) && $entity->hasField($fields['text_color']) && !$entity->get($fields['text_color'])->isEmpty()) {
     $text_color = $entity->get($fields['text_color'])->value;
@@ -528,6 +494,12 @@ function _create_hero(ContentEntityInterface $entity, array $fields): array {
     'content_attributes' => $content_attributes,
   ];
 
+  if (isset($fields['media']) && $entity->hasField($fields['media']) && !$entity->get($fields['media'])->isEmpty()) {
+    /** @var Drupal\media\Entity\Media $media */
+    $media = $entity->get($fields['media'])->entity;
+    $hero['media'] = \Drupal::entityTypeManager()->getViewBuilder('media')->view($media, 'hero');
+  }
+
   if (isset($fields['teaser']) && $entity->hasField($fields['teaser']) && !$entity->get($fields['teaser'])->isEmpty()) {
     $hero['teaser'] = ['#markup' => $entity->get($fields['teaser'])->value];
   }
@@ -543,15 +515,6 @@ function _create_hero(ContentEntityInterface $entity, array $fields): array {
         $hero['cta']['attributes'] = $cta_attributes;
       }
     }
-  }
-
-  if (!empty($background_image_uri)) {
-    $hero['background_image'] = [
-      'title' => '',
-      'alt' => '',
-      'url' => file_create_url($background_image_uri),
-      'uri' => $background_image_uri,
-    ];
   }
 
   return $hero;

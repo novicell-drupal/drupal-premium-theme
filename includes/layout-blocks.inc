@@ -105,7 +105,7 @@ function premium_theme_preprocess_layout_block__hero(array &$variables) {
   $entity = $variables['entity'];
   $variables['hero'] = _create_hero($entity, [
     'title' => 'field_hero_headline',
-    'background_image' => 'field_hero_background',
+    'media' => 'field_hero_background',
     'text_color' => 'field_hero_color',
     'orientation' => 'field_hero_orientation',
     'teaser' => 'field_hero_subline',
