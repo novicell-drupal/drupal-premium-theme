@@ -1,6 +1,7 @@
 <?php
 
 use Drupal\Core\Url;
+use Drupal\Core\TypedData\Exception\MissingDataException;
 
 /**
  * Button layout block preprocess.
@@ -8,27 +9,34 @@ use Drupal\Core\Url;
  * @param array $variables
  *   Template variables.
  */
-function premium_theme_preprocess_layout_block__button(array &$variables) {
-  $entity = $variables['entity'];
+function premium_theme_preprocess_block__inline_block__button(array &$variables) {
+  /** @var \Drupal\block_content\Entity\BlockContent $block */
+  $block = $variables['elements']['content']['#block_content'];
 
-  if ($entity->hasField('field_button') && !$entity->get('field_button')->isEmpty()) {
-    $cta = $entity->get('field_button')->getValue();
+  if ($block->hasField('field_button') && !$block->get('field_button')->isEmpty()) {
+    try {
+      $button = $block->get('field_button')->first();
 
-    if (isset($cta['uri'], $cta['title'])) {
-      $variables['cta']['title'] = $cta['title'];
-      $variables['cta']['url'] = Url::fromUri($cta['uri'])->toString();
+      if (!is_null($button)) {
+        $button = $button->getValue();
 
-      /** @var \Drupal\Core\Template\Attribute $cta_attributes */
-      $cta_attributes = new Attribute();
-      if ($entity->hasField('field_button_alignment') && !$entity->get('field_button_alignment')->isEmpty()) {
-        $cta_attributes->addClass('button--' . $entity->get('field_button_alignment')->value);
+        if (isset($button['uri'], $button['title'])) {
+          $variables['title'] = $button['title'];
+          $variables['url'] = Url::fromUri($button['uri'])->toString();
+
+          /** @var \Drupal\Core\Template\Attribute $cta_attributes */
+          if ($block->hasField('field_button_alignment') && !$block->get('field_button_alignment')->isEmpty()) {
+            $variables['alignment'] = $block->get('field_button_alignment')->value;
+          }
+
+          if (isset($button['target_blank']) && (int) $button['target_blank'] === 1) {
+            $variables['target'] = 'blank';
+          }
+        }
       }
-
-      if (isset($cta['target_blank']) && (int) $cta['target_blank'] === 1) {
-        $cta_attributes->setAttribute('target', 'blank');
-      }
-
-      $variables['cta']['attributes'] = $cta_attributes;
+    }
+    catch (MissingDataException $e) {
+      Drupal::logger('premium_theme')->error($e->getMessage());
     }
   }
 }
