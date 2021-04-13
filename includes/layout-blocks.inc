@@ -74,28 +74,6 @@ function premium_theme_preprocess_layout_block__slideshow(array &$variables) {
 }
 
 /**
- * Accordion layout block preprocess.
- *
- * @param array $variables
- *   Template variables.
- */
-function premium_theme_preprocess_layout_block__accordion(array &$variables) {
-  $entity = $variables['entity'];
-  $items = $entity->get('field_accordion_items');
-
-  if (!empty($items)) {
-    foreach ($items as $item) {
-      $item = $item->entity;
-      $variables['items'][] = [
-        'id' => $item->id(),
-        'headline' => $item->get('field_accordion_item_headline')->value,
-        'text' => ['#markup' => $item->get('field_accordion_item_text')->value],
-      ];
-    }
-  }
-}
-
-/**
  * Hero layout block preprocess.
  *
  * @param array $variables
