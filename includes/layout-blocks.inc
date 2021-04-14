@@ -162,46 +162,54 @@ function premium_theme_preprocess_block__inline_block__video(array &$variables) 
  * @param array $variables
  *   Template variables.
  */
-function premium_theme_preprocess_layout_block__appetizer(array &$variables) {
-  $entity = $variables['entity'];
+function premium_theme_preprocess_block__inline_block__appetizer(array &$variables) {
+  /** @var \Drupal\block_content\Entity\BlockContent $block */
+  $block = $variables['elements']['content']['#block_content'];
+  $layout = $variables['elements']['content']['#layout'] ?? [];
+  $layout_id = $layout['layout_id'] ?? '';
+  $image_style = 'appetiser';
 
-  if ($entity->hasField('field_appetizer_cta') && !$entity->get('field_appetizer_cta')->isEmpty()) {
-    $cta = $entity->get('field_appetizer_cta')->getValue();
+  if ($block->hasField('field_appetizer_cta') && !$block->get('field_appetizer_cta')->isEmpty()) {
+    try {
+      $button = $block->get('field_appetizer_cta')->first();
 
-    if (isset($cta['uri'], $cta['title'])) {
-      $variables['cta']['title'] = $cta['title'];
-      $variables['cta']['url'] = Url::fromUri($cta['uri'])->toString();
+      if (!is_null($button)) {
+        $button = $button->getValue();
 
-      if (isset($cta['target_blank']) && (int) $cta['target_blank'] === 1) {
-        /** @var \Drupal\Core\Template\Attribute $cta_attributes */
-        $cta_attributes = new Attribute();
-        $cta_attributes->setAttribute('target', 'blank');
-        $variables['cta']['attributes'] = $cta_attributes;
+        if (isset($button['uri'], $button['title'])) {
+          $variables['link']['title'] = $button['title'];
+          $variables['link']['url'] = Url::fromUri($button['uri'])->toString();
+
+          if (isset($button['target_blank']) && (int) $button['target_blank'] === 1) {
+            $variables['link']['target'] = '_blank';
+          }
+        }
       }
     }
+    catch (MissingDataException $e) {
+      Drupal::logger('premium_theme')->error($e->getMessage());
+    }
   }
-
-  $layout_id = $variables['layout']['layout_id'];
-  $layout_settings = $variables['layout']['settings'];
 
   if ($layout_id === 'layout_twocol_section' || $layout_id === 'layout_threecol_section') {
     $variables['is_small_version'] = TRUE;
   }
 
-  if ($layout_id === 'layout_onecol' && isset($layout_settings['column_width']) && $layout_settings['column_width'] === 'fullwidth') {
-    $variables['image_style'] = 'appetiser_wide';
+  if ($layout_id === 'layout_onecol' && isset($layout['settings']['column_width']) && $layout['settings']['column_width'] === 'fullwidth') {
+    $image_style = 'appetiser_wide';
     $variables['display_as_fullwidth'] = TRUE;
   }
   elseif ($layout_id === 'layout_onecol') {
-    $variables['image_style'] = 'appetiser';
+    $image_style = 'appetiser';
   }
   elseif ($layout_id === 'layout_twocol_section') {
-    $variables['image_style'] = '2_column';
+    $image_style = '2_column';
   }
   elseif ($layout_id === 'layout_threecol_section') {
-    $variables['image_style'] = '3_column';
+    $image_style = '3_column';
   }
-  else {
-    $variables['image_style'] = 'appetiser';
+
+  if ($block->hasField('field_appetizer_image') && !$block->get('field_appetizer_image')->isEmpty()) {
+    $variables['media'] = \Drupal::entityTypeManager()->getViewBuilder('media')->view($block->get('field_appetizer_image')->entity, $image_style);
   }
 }
