@@ -24,7 +24,6 @@ function premium_theme_preprocess_block__inline_block__button(array &$variables)
           $variables['title'] = $button['title'];
           $variables['url'] = Url::fromUri($button['uri'])->toString();
 
-          /** @var \Drupal\Core\Template\Attribute $cta_attributes */
           if ($block->hasField('field_button_alignment') && !$block->get('field_button_alignment')->isEmpty()) {
             $variables['alignment'] = $block->get('field_button_alignment')->value;
           }
@@ -105,33 +104,27 @@ function premium_theme_preprocess_layout_block__hero(array &$variables) {
  * @param array $variables
  *   Template variables.
  */
-function premium_theme_preprocess_layout_block__video(array &$variables) {
-  $video_oembed = ['url' => 'null', 'oEmbed' => 'null'];
-  $video_media = $variables['fields']['field_video_media'];
+function premium_theme_preprocess_block__inline_block__video(array &$variables) {
+  /** @var \Drupal\block_content\Entity\BlockContent $block */
+  $block = $variables['elements']['content']['#block_content'];
 
-  if (!empty($video_media) && Drupal::hasService('dds_media.media_helper')) {
-    /** @var Drupal\dds_media\MediaHelper $service */
-    $service = Drupal::service('dds_media.media_helper');
-    $video_data = $service->get_video_data_from_media($video_media->getEntity());
-    $video_oembed['url'] = $video_data['url'];
-    $video_oembed['oEmbed'] = ['html' => $video_data['player']];
-  }
+  if ($block->hasField('field_video_media') && !$block->get('field_video_media')->isEmpty()) {
+    $media = $block->get('field_video_media')->entity;
+    $layout = $variables['elements']['content']['#layout'] ?? [];
+    $image_style = '1_column';
+    $layout_id = $layout['layout_id'] ?? '';
 
-  $variables['video_oembed'] = json_encode($video_oembed);
-  $layout_id = $variables['layout']['layout_id'];
-  $layout_settings = $variables['layout']['settings'];
+    if ($layout_id === 'layout_onecol' && isset($layout['settings']['column_width']) && $layout['settings']['column_width'] === 'fullwidth') {
+      $image_style = 'full_width_16_9';
+    }
+    elseif ($layout_id === 'layout_twocol_section') {
+      $image_style = '2_column';
+    }
+    elseif ($layout_id === 'layout_threecol_section') {
+      $image_style = '3_column';
+    }
 
-  if ($layout_id === 'layout_onecol' && isset($layout_settings['column_width']) && $layout_settings['column_width'] === 'fullwidth') {
-    $variables['image_style'] = 'full_width_16_9';
-  }
-  elseif ($layout_id === 'layout_onecol') {
-    $variables['image_style'] = '1_column';
-  }
-  elseif ($layout_id === 'layout_twocol_section') {
-    $variables['image_style'] = '2_column';
-  }
-  elseif ($layout_id === 'layout_threecol_section') {
-    $variables['image_style'] = '3_column';
+    $variables['media_image'] = \Drupal::entityTypeManager()->getViewBuilder('media')->view($media, $image_style);
   }
 }
 
