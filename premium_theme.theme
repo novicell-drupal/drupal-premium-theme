@@ -334,7 +334,7 @@ function premium_theme_preprocess_breadcrumb(array &$variables) {
   $node = Drupal::routeMatch()->getParameter('node');
 
   if ($node instanceof NodeInterface) {
-    $variables['disable'] = $node->hasField('field_hide_breadcrumb') && $node->get('field_hide_breadcrumb')->value == 1;
+    $variables['disable'] = $node->hasField('field_hide_breadcrumb') && (int) $node->get('field_hide_breadcrumb')->value === 1;
   }
 
   $attribute = new Attribute();

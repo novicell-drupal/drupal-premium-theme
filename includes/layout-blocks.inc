@@ -52,21 +52,24 @@ function premium_theme_preprocess_block__inline_block__image(array &$variables) 
 
   if ($block->hasField('field_image_media') && !$block->get('field_image_media')->isEmpty()) {
     $media = $block->get('field_image_media')->entity;
-    $layout = $variables['elements']['content']['#layout'] ?? [];
-    $image_style = '1_column';
-    $layout_id = $layout['layout_id'] ?? '';
 
-    if ($layout_id === 'layout_onecol' && isset($layout['settings']['column_width']) && $layout['settings']['column_width'] === 'fullwidth') {
-      $image_style = 'full_width_16_9';
-    }
-    elseif ($layout_id === 'layout_twocol_section') {
-      $image_style = '2_column';
-    }
-    elseif ($layout_id === 'layout_threecol_section') {
-      $image_style = '3_column';
-    }
+    if (!is_null($media)) {
+      $layout = $variables['elements']['content']['#layout'] ?? [];
+      $image_style = '1_column';
+      $layout_id = $layout['layout_id'] ?? '';
 
-    $variables['media'] = \Drupal::entityTypeManager()->getViewBuilder('media')->view($media, $image_style);
+      if ($layout_id === 'layout_onecol' && isset($layout['settings']['column_width']) && $layout['settings']['column_width'] === 'fullwidth') {
+        $image_style = 'full_width_16_9';
+      }
+      elseif ($layout_id === 'layout_twocol_section') {
+        $image_style = '2_column';
+      }
+      elseif ($layout_id === 'layout_threecol_section') {
+        $image_style = '3_column';
+      }
+
+      $variables['media'] = \Drupal::entityTypeManager()->getViewBuilder('media')->view($media, $image_style);
+    }
   }
 
   if ($block->hasField('field_image_link') && !$block->get('field_image_link')->isEmpty()) {
@@ -129,21 +132,24 @@ function premium_theme_preprocess_block__inline_block__video(array &$variables) 
 
   if ($block->hasField('field_video_media') && !$block->get('field_video_media')->isEmpty()) {
     $media = $block->get('field_video_media')->entity;
-    $layout = $variables['elements']['content']['#layout'] ?? [];
-    $image_style = '1_column';
-    $layout_id = $layout['layout_id'] ?? '';
 
-    if ($layout_id === 'layout_onecol' && isset($layout['settings']['column_width']) && $layout['settings']['column_width'] === 'fullwidth') {
-      $image_style = 'full_width_16_9';
-    }
-    elseif ($layout_id === 'layout_twocol_section') {
-      $image_style = '2_column';
-    }
-    elseif ($layout_id === 'layout_threecol_section') {
-      $image_style = '3_column';
-    }
+    if (!is_null($media)) {
+      $layout = $variables['elements']['content']['#layout'] ?? [];
+      $image_style = '1_column';
+      $layout_id = $layout['layout_id'] ?? '';
 
-    $variables['media_image'] = \Drupal::entityTypeManager()->getViewBuilder('media')->view($media, $image_style);
+      if ($layout_id === 'layout_onecol' && isset($layout['settings']['column_width']) && $layout['settings']['column_width'] === 'fullwidth') {
+        $image_style = 'full_width_16_9';
+      }
+      elseif ($layout_id === 'layout_twocol_section') {
+        $image_style = '2_column';
+      }
+      elseif ($layout_id === 'layout_threecol_section') {
+        $image_style = '3_column';
+      }
+
+      $variables['media_image'] = \Drupal::entityTypeManager()->getViewBuilder('media')->view($media, $image_style);
+    }
   }
 }
 

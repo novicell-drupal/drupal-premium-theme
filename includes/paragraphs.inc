@@ -15,7 +15,13 @@ function premium_theme_preprocess_paragraph__basic_hero__full(array &$variables)
   $variables['title'] = $variables['elements']['#title'];
 
   if ($paragraph->hasField('field_background') && !$paragraph->get('field_background')->isEmpty()) {
-    $variables['media'] = \Drupal::entityTypeManager()->getViewBuilder('media')->view($paragraph->get('field_background')->entity, 'hero');
+    $media = $paragraph->get('field_background')->entity;
+    if (!is_null($media)) {
+      $variables['media_image'] = \Drupal::entityTypeManager()->getViewBuilder('media')->view($media, 'hero');
+      if ($media->bundle() === 'remote_video') {
+        $variables['media'] = \Drupal::entityTypeManager()->getViewBuilder('media')->view($media);
+      }
+    }
   }
 
   if ($paragraph->hasField('field_cta') && !$paragraph->get('field_cta')->isEmpty()) {
