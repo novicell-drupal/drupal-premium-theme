@@ -113,16 +113,8 @@ function premium_theme_preprocess_layout_block__slideshow(array &$variables) {
  * @param array $variables
  *   Template variables.
  */
-function premium_theme_preprocess_layout_block__hero(array &$variables) {
-  $entity = $variables['entity'];
-  $variables['hero'] = _create_hero($entity, [
-    'title' => 'field_hero_headline',
-    'media' => 'field_hero_background',
-    'text_color' => 'field_hero_color',
-    'orientation' => 'field_hero_orientation',
-    'teaser' => 'field_hero_subline',
-    'cta' => 'field_hero_button',
-  ]);
+function premium_theme_preprocess_block__inline_block__hero(array &$variables) {
+
 }
 
 /**
@@ -154,7 +146,6 @@ function premium_theme_preprocess_block__inline_block__video(array &$variables) 
     $variables['media_image'] = \Drupal::entityTypeManager()->getViewBuilder('media')->view($media, $image_style);
   }
 }
-
 
 /**
  * Appetizer layout block preprocess.

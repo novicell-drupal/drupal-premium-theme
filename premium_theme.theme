@@ -8,6 +8,7 @@ use Drupal\Core\Template\Attribute;
 use Drupal\node\NodeInterface;
 
 require_once __DIR__ . '/includes/layout-blocks.inc';
+require_once __DIR__ . '/includes/paragraphs.inc';
 
 /**
  * Adding time to version, to prevent browser caching.
@@ -170,29 +171,6 @@ function premium_theme_preprocess_block(array &$variables) {
     if (!is_null($block)) {
       $region = $block->getRegion();
       $variables['content']['#attributes']['region'] = $region;
-    }
-  }
-}
-
-/**
- * Add hero if its a node and footer to all pages.
- *
- * @param array $variables
- *   Template variables.
- */
-function premium_theme_preprocess_page(array &$variables) {
-  if (isset($variables['node'])) {
-    /** @var Drupal\node\Entity\Node $node */
-    if (!empty($node = $variables['node'])) {
-      $variables['hero'] = _create_hero($node, [
-        'title' => 'title',
-        'media' => 'field_header_background',
-        'text_color' => 'field_header_text_color',
-        'orientation' => 'field_header_orientation',
-        'color_theme' => 'field_header_color_theme',
-        'teaser' => 'field_header_subline',
-        'cta' => 'field_header_cta',
-      ]);
     }
   }
 }
@@ -384,89 +362,4 @@ function premium_theme_preprocess_search_page__results(array &$variables) {
       }
     }
   }
-}
-
-/**
- * Create hero.
- *
- * @param Drupal\Core\Entity\ContentEntityInterface $entity
- *   Could eg. be a node or a block.
- * @param array $fields
- *   Mapping array containing fields from the entity.
- *
- * @return array
- *   Contains template variables for building hero.
- */
-function _create_hero(ContentEntityInterface $entity, array $fields): array {
-  $hero_attributes = new Attribute();
-  $section_attributes = new Attribute();
-  $content_attributes = new Attribute();
-  $text_color = 'dark';
-  $orientation = 'left';
-  $color_theme = '';
-  $title = '';
-  $video_oembed = ['url' => 'null', 'oEmbed' => 'null'];
-
-  if (isset($fields['text_color']) && $entity->hasField($fields['text_color']) && !$entity->get($fields['text_color'])->isEmpty()) {
-    $text_color = $entity->get($fields['text_color'])->value;
-  }
-
-  if (isset($fields['orientation']) && $entity->hasField($fields['orientation']) && !$entity->get($fields['orientation'])->isEmpty()) {
-    $orientation = $entity->get($fields['orientation'])->value;
-  }
-
-  if (isset($fields['color_theme']) && $entity->hasField($fields['color_theme']) && !$entity->get($fields['color_theme'])->isEmpty()) {
-    $color_theme = $entity->get($fields['color_theme'])->value;
-  }
-
-  $section_attributes->addClass('section')
-    ->addClass('section--no-spacing');
-
-  if (!empty($color_theme)) {
-    $section_attributes->addClass('theme');
-    $section_attributes->addClass('theme-' . $color_theme);
-  }
-
-  $attributes = $hero_attributes
-    ->addClass(($orientation !== 'left' ? 'hero--' . $orientation : ''))
-    ->addClass($text_color !== 'dark' ? 'hero--inverted' : '');
-
-  if (isset($fields['title']) && $entity->hasField($fields['title']) && !$entity->get($fields['title'])->isEmpty()) {
-    $title = $entity->get($fields['title'])->value;
-  }
-
-  $hero = [
-    'attributes' => $attributes,
-    'position' => $orientation,
-    'title' => $title,
-    'video_oembed' => json_encode($video_oembed),
-    'cta' => [],
-    'section_attributes' => $section_attributes,
-    'content_attributes' => $content_attributes,
-  ];
-
-  if (isset($fields['media']) && $entity->hasField($fields['media']) && !$entity->get($fields['media'])->isEmpty()) {
-    /** @var Drupal\media\Entity\Media $media */
-    $media = $entity->get($fields['media'])->entity;
-    $hero['media'] = \Drupal::entityTypeManager()->getViewBuilder('media')->view($media, 'hero');
-  }
-
-  if (isset($fields['teaser']) && $entity->hasField($fields['teaser']) && !$entity->get($fields['teaser'])->isEmpty()) {
-    $hero['teaser'] = ['#markup' => $entity->get($fields['teaser'])->value];
-  }
-
-  if (isset($fields['cta']) && $entity->hasField($fields['cta']) && !$entity->get($fields['cta'])->isEmpty()) {
-    $cta = $entity->get($fields['cta'])->getValue();
-    if (isset($cta['uri'], $cta['title'])) {
-      $hero['cta']['title'] = $cta['title'];
-      $hero['cta']['url'] = Url::fromUri($cta['uri'])->toString();
-      if (isset($cta['target_blank']) && (int) $cta['target_blank'] === 1) {
-        $cta_attributes = new Attribute();
-        $cta_attributes->setAttribute('target', 'blank');
-        $hero['cta']['attributes'] = $cta_attributes;
-      }
-    }
-  }
-
-  return $hero;
 }
