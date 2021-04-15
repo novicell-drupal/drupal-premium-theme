@@ -293,56 +293,6 @@ function premium_theme_preprocess_dds_cookieinfo(array &$variables) {
 }
 
 /**
- * Add ability to make the breadcrumb to float above the hero and schema.
- *
- * @param array $variables
- *   Template variables.
- */
-function premium_theme_preprocess_breadcrumb(array &$variables) {
-  $variables['#cache']['contexts'][] = 'url';
-
-  $breadcrumb_json_data = [
-    '@context' => 'http://schema.org',
-    '@type' => 'BreadcrumbList',
-    'itemListElement' => [],
-  ];
-
-  if (!empty($variables['links'])) {
-    /** @var \Drupal\Core\Link $item */
-    foreach ($variables['links'] as $key => $item) {
-      $breadcrumb_json_data['itemListElement'] = [
-        '@type' => 'ListItem',
-        'position' => $key,
-        'item' => [
-          '@id' => $item->getUrl()->toString(),
-          'name' => $item->getText(),
-        ],
-      ];
-    }
-  }
-
-  $variables['breadcrumb_json_data'] = [
-    '#type' => 'html_tag',
-    '#tag' => 'script',
-    '#attributes' => [
-      'type' => 'application/ld+json',
-    ],
-    '#value' => json_encode($breadcrumb_json_data),
-  ];
-
-  $variables['disable'] = FALSE;
-  $node = Drupal::routeMatch()->getParameter('node');
-
-  if ($node instanceof NodeInterface) {
-    $variables['disable'] = $node->hasField('field_hide_breadcrumb') && (int) $node->get('field_hide_breadcrumb')->value === 1;
-  }
-
-  $attribute = new Attribute();
-  $attribute->addClass('container');
-  $variables['items_attributes'] = (!empty($variables['items_attributes']) ? $variables['items_attributes'] : $attribute);
-}
-
-/**
  * Search results.
  *
  * @param array $variables
