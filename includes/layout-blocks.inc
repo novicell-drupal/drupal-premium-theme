@@ -100,24 +100,20 @@ function premium_theme_preprocess_block__inline_block__image(array &$variables) 
  * @param array $variables
  *   Template variables.
  */
-function premium_theme_preprocess_layout_block__slideshow(array &$variables) {
-  $items = $variables['fields']['field_slideshow_images'];
+function premium_theme_preprocess_block__inline_block__slideshow(array &$variables) {
+  /** @var \Drupal\block_content\Entity\BlockContent $block */
+  $block = $variables['elements']['content']['#block_content'];
 
-  if (!empty($items)) {
-    foreach ($items as $item) {
-      $variables['items'][] = ['image' => $item['field_media_image']];
+  if ($block->hasField('field_slideshow_images') && !$block->get('field_slideshow_images')->isEmpty()) {
+    $medias = $block->get('field_slideshow_images')->referencedEntities();
+    $media_view_builder = \Drupal::entityTypeManager()->getViewBuilder('media');
+
+    if (!empty($medias)) {
+      foreach ($medias as $media) {
+        $variables['items'][] = ['image' => $media_view_builder->view($media, 'hero')];
+      }
     }
   }
-}
-
-/**
- * Hero layout block preprocess.
- *
- * @param array $variables
- *   Template variables.
- */
-function premium_theme_preprocess_block__inline_block__hero(array &$variables) {
-
 }
 
 /**
@@ -209,4 +205,14 @@ function premium_theme_preprocess_block__inline_block__appetizer(array &$variabl
   if ($block->hasField('field_appetizer_image') && !$block->get('field_appetizer_image')->isEmpty()) {
     $variables['media'] = \Drupal::entityTypeManager()->getViewBuilder('media')->view($block->get('field_appetizer_image')->entity, $image_style);
   }
+}
+
+/**
+ * Code preprocess.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_preprocess_block__inline_block__code(array &$variables) {
+  $variables['layout_builder_mode'] = strpos(Drupal::routeMatch()->getRouteName(), 'layout_builder') === 0;
 }
