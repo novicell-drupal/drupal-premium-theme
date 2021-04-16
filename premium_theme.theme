@@ -11,6 +11,52 @@ require_once __DIR__ . '/includes/layout-blocks.inc';
 require_once __DIR__ . '/includes/paragraphs.inc';
 
 /**
+ * Input preprocess for adding checkbox, radio or input classes.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_preprocess_input(array &$variables) {
+  $type = $variables['element']['#type'];
+  if ($type === 'checkbox') {
+    $variables['attributes']['class'][] = 'checkbox';
+  }
+  if ($type === 'radio') {
+    $variables['attributes']['class'][] = 'radio';
+  }
+  $excluded_types = [
+    'search',
+    'textfield',
+    'password',
+    'datetime',
+    'datetime-local',
+    'date',
+    'month',
+    'time',
+    'week',
+    'number',
+    'email',
+    'url',
+    'tel',
+    'color',
+  ];
+
+  if (in_array($type, $excluded_types, TRUE)) {
+    $variables['attributes']['class'][] = 'input';
+  }
+}
+
+/**
+ * Textarea preprocess.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_preprocess_textarea(array &$variables) {
+  $variables['attributes']['class'][] = 'textarea';
+}
+
+/**
  * Adding time to version, to prevent browser caching.
  *
  * @param array $libraries

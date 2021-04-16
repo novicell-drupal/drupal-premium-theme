@@ -2,6 +2,7 @@
 
 use Drupal\Core\Url;
 use Drupal\Core\TypedData\Exception\MissingDataException;
+use Drupal\node\Entity\Node;
 
 /**
  * Button layout block preprocess.
@@ -215,4 +216,45 @@ function premium_theme_preprocess_block__inline_block__appetizer(array &$variabl
  */
 function premium_theme_preprocess_block__inline_block__code(array &$variables) {
   $variables['layout_builder_mode'] = strpos(Drupal::routeMatch()->getRouteName(), 'layout_builder') === 0;
+}
+
+/**
+ * Inline navigation preprocess.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_preprocess_block__inline_block__inline_navigation(array &$variables) {
+  /** @var \Drupal\block_content\Entity\BlockContent $block */
+  $block = $variables['elements']['content']['#block_content'];
+
+  if ($block->hasField('field_inline_navigation_mode') && Drupal::moduleHandler()->moduleExists('content_hierarchy') && $block->get('field_inline_navigation_mode')->value === 'parent') {
+    $parent_id = $block->get('field_inline_navigation_parent')->target_id;
+    $nodes = \Drupal::service('content_hierarchy')->getChildrenOfParentID($parent_id);
+    // Set a cache tags, so it is possible to invalidate it, if a new node sets
+    // the selected parent as it´s parent.
+    $variables['#cache']['tags'][] = 'hierarchy:parent:' . $parent_id;
+  }
+  else {
+    $node_ids = [];
+    if ($block->hasField('field_inline_navigation_pages')) {
+      foreach ($block->get('field_inline_navigation_pages') as $value) {
+        $node_ids[] = $value->target_id;
+      }
+      $nodes = Node::loadMultiple($node_ids);
+    }
+  }
+
+  if (!empty($nodes)) {
+    $view_builder = \Drupal::entityTypeManager()->getViewBuilder('node');
+    $rendered_nodes = [];
+    /** @var \Drupal\node\Entity\Node $node */
+    foreach ($nodes as $node) {
+      if ($node->access()) {
+        $rendered_nodes[] = $view_builder->view($node, 'inline_navigation');
+      }
+    }
+    $variables['content'] = $rendered_nodes;
+  }
+
 }
