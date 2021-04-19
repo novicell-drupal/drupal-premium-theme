@@ -222,42 +222,6 @@ function premium_theme_preprocess_block(array &$variables) {
 }
 
 /**
- * Modify and change template variables.
- *
- * @param array $variables
- *   Template variables.
- */
-function premium_theme_preprocess_node__inline_navigation(array &$variables) {
-  /** @var \Drupal\node\Entity\Node $node */
-  $node = $variables['node'];
-  $image_uri = '';
-
-  if ($node->hasField('field_header_background') && !$node->get('field_header_background')->isEmpty()) {
-    /** @var Drupal\media\Entity\Media $media */
-    $media = $node->get('field_header_background')->entity;
-    if (!is_null($media) && $media->hasField('field_media_image')) {
-      /** @var Drupal\file\Entity\File $file */
-      if (!empty($file = $media->get('field_media_image')->entity)) {
-        $image_uri = $file->getFileUri() ?? '';
-      }
-    }
-  }
-
-  if (!empty($image_uri)) {
-    $variables['image'] = [
-      'title' => '',
-      'alt' => '',
-      'url' => file_create_url($image_uri),
-      'uri' => $image_uri,
-    ];
-  }
-
-  if ($node->hasField('field_header_subline') && !$node->get('field_header_subline')->isEmpty()) {
-    $variables['teaser'] = strip_tags($node->get('field_header_subline')->value);
-  }
-}
-
-/**
  * Add data-src if image have a lazyload class.
  *
  * @param array $variables
