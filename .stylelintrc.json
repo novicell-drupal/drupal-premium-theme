@@ -12,7 +12,7 @@
     "selector-max-class": 6,
     "declaration-no-important": true,
     "unit-no-unknown": true,
-    "selector-nested-pattern": "^([.]|&)",
+    "selector-nested-pattern": "^([.]|&|a|input|select|img|header|li|tr|td|thead|tbody|th)",
     "selector-class-pattern": "^[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*(?:__[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?(?:--[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*)?(?:\\[.+\\])?$",
     "property-no-unknown": [
       true,

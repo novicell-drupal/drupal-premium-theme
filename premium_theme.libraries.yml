@@ -8,3 +8,9 @@ layout-builder:
   css:
     theme:
       dist/css/layout-builder.css: {}
+
+layout-builder-media:
+  version: VERSION
+  css:
+    theme:
+      dist/css/layout-builder-media-library.css: {}
