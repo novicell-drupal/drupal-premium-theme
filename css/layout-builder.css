@@ -392,11 +392,16 @@
   margin: 0 auto 20px;
 }
 
-/* -- AUTOSAVE NOTIFICATIOn -- */
+/* Autosave notification  */
 #autosave-notification {
   bottom: 50px;
 }
 
 .js-off-canvas-dialog-open #autosave-notification {
   right: 310px;
+}
+
+/* Content moderation hide  */
+.layout-builder-form .field--name-moderation-state {
+  display: none;
 }
