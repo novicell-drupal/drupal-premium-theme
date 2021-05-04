@@ -280,23 +280,12 @@ function premium_theme_preprocess_maintenance_page(array &$variables) {
 }
 
 /**
- * Add alt and title to site branding.
- *
- * @param array $variables
- *   Template variables.
- */
-function premium_theme_preprocess_block__site_branding(array &$variables) {
-  $variables['alt'] = 'Home';
-  $variables['title'] = 'Home';
-}
-
-/**
  * Add theme information to cooke info.
  *
  * @param array $variables
  *   Template variables.
  */
-function premium_theme_preprocess_dds_cookieinfo(array &$variables) {
+function premium_theme_preprocess_cookie_info(array &$variables) {
   $variables['attributes']->addClass('theme')
     ->addClass('section')
     ->addClass('theme-secondary');
