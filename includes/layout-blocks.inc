@@ -230,10 +230,17 @@ function premium_theme_preprocess_block__inline_block__inline_navigation(array &
 
   if (Drupal::moduleHandler()->moduleExists('content_hierarchy') && $block->hasField('field_inline_navigation_mode') && $block->get('field_inline_navigation_mode')->value === 'parent') {
     $parent_id = $block->get('field_inline_navigation_parent')->target_id;
-    $nodes = \Drupal::service('content_hierarchy')->getChildrenOfParentID($parent_id);
+    /** @var \Drupal\content_hierarchy\ContentHierarchyStorage $contentHierarchyStorage */
+    $contentHierarchyStorage = \Drupal::service('content_hierarchy.storage');
+    $content = $contentHierarchyStorage->load($parent_id);
+    $children = $content->getChildren();
+    $nodes = [];
+    foreach ($children as $child) {
+      $nodes[] = $child->getEntity();
+    }
     // Set a cache tags, so it is possible to invalidate it, if a new node sets
     // the selected parent as it´s parent.
-    $variables['#cache']['tags'][] = 'hierarchy:parent:' . $parent_id;
+    $variables['#cache']['tags'][] += $contentHierarchyStorage->getContentCacheTags([$content]);
   }
   else {
     $node_ids = [];
