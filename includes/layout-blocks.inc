@@ -233,10 +233,12 @@ function premium_theme_preprocess_block__inline_block__inline_navigation(array &
     /** @var \Drupal\content_hierarchy\ContentHierarchyStorage $contentHierarchyStorage */
     $contentHierarchyStorage = \Drupal::service('content_hierarchy.storage');
     $content = $contentHierarchyStorage->load($parent_id);
-    $children = $content->getChildren();
     $nodes = [];
-    foreach ($children as $child) {
-      $nodes[] = $child->getEntity();
+    if (!empty($content)) {
+      $children = $content->getChildren() ?? [];
+      foreach ($children as $child) {
+        $nodes[] = $child->getEntity();
+      }
     }
     // Set a cache tags, so it is possible to invalidate it, if a new node sets
     // the selected parent as it´s parent.
