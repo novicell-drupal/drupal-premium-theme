@@ -239,10 +239,10 @@ function premium_theme_preprocess_block__inline_block__inline_navigation(array &
       foreach ($children as $child) {
         $nodes[] = $child->getEntity();
       }
+      // Set a cache tags, so it is possible to invalidate it, if a new node sets
+      // the selected parent as it´s parent.
+      $variables['#cache']['tags'][] += $contentHierarchyStorage->getContentCacheTags([$content]);
     }
-    // Set a cache tags, so it is possible to invalidate it, if a new node sets
-    // the selected parent as it´s parent.
-    $variables['#cache']['tags'][] += $contentHierarchyStorage->getContentCacheTags([$content]);
   }
   else {
     $node_ids = [];
