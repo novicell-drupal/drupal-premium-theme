@@ -264,6 +264,8 @@ function premium_theme_preprocess_block__inline_block__inline_navigation(array &
       }
     }
     $variables['content'] = $rendered_nodes;
+  } else {
+    $variables['content'] = [];
   }
 
 }
