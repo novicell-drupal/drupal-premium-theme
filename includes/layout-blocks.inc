@@ -1,5 +1,6 @@
 <?php
 
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Url;
 use Drupal\Core\TypedData\Exception\MissingDataException;
 use Drupal\node\Entity\Node;
@@ -234,14 +235,20 @@ function premium_theme_preprocess_block__inline_block__inline_navigation(array &
     $contentHierarchyStorage = \Drupal::service('content_hierarchy.storage');
     $content = $contentHierarchyStorage->load($parent_id);
     $nodes = [];
-    if (!empty($content)) {
+    if (!is_null($content)) {
       $children = $content->getChildren() ?? [];
       foreach ($children as $child) {
         $nodes[] = $child->getEntity();
       }
-      // Set a cache tags, so it is possible to invalidate it, if a new node sets
-      // the selected parent as it´s parent.
-      $variables['#cache']['tags'][] += $contentHierarchyStorage->getContentCacheTags([$content]);
+
+      // Set a cache tags, so it is possible to invalidate it,
+      // if a new node sets the selected parent as it´s parent.
+      if (!empty($variables['#cache']['tags'])) {
+        $variables['#cache']['tags'] = Cache::mergeTags($variables['#cache']['tags'], $contentHierarchyStorage->getContentCacheTags([$content]));
+      }
+      else {
+        $variables['#cache']['tags'] = $contentHierarchyStorage->getContentCacheTags([$content]);
+      }
     }
   }
   else {
@@ -264,7 +271,8 @@ function premium_theme_preprocess_block__inline_block__inline_navigation(array &
       }
     }
     $variables['content'] = $rendered_nodes;
-  } else {
+  }
+  else {
     $variables['content'] = [];
   }
 
