@@ -204,7 +204,7 @@ function premium_theme_preprocess_block__inline_block__appetizer(array &$variabl
     $image_style = '3_column';
   }
 
-  if ($block->hasField('field_appetizer_image') && !$block->get('field_appetizer_image')->isEmpty()) {
+  if ($block->hasField('field_appetizer_image') && !$block->get('field_appetizer_image')->isEmpty() && !is_null($block->get('field_appetizer_image')->entity)) {
     $variables['media'] = \Drupal::entityTypeManager()->getViewBuilder('media')->view($block->get('field_appetizer_image')->entity, $image_style);
   }
 }
