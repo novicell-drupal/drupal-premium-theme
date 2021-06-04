@@ -231,9 +231,10 @@ function premium_theme_preprocess_block__inline_block__inline_navigation(array &
 
   if (Drupal::moduleHandler()->moduleExists('content_hierarchy') && $block->hasField('field_inline_navigation_mode') && $block->get('field_inline_navigation_mode')->value === 'parent') {
     $parent_id = $block->get('field_inline_navigation_parent')->target_id;
+    $node = Node::load($parent_id);
     /** @var \Drupal\content_hierarchy\ContentHierarchyStorage $contentHierarchyStorage */
     $contentHierarchyStorage = \Drupal::service('content_hierarchy.storage');
-    $content = $contentHierarchyStorage->load($parent_id);
+    $content = $contentHierarchyStorage->loadFromEntity($node);
     $nodes = [];
     if (!is_null($content)) {
       $children = $content->getChildren() ?? [];
