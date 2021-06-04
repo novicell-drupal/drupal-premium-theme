@@ -229,26 +229,28 @@ function premium_theme_preprocess_block__inline_block__inline_navigation(array &
   /** @var \Drupal\block_content\Entity\BlockContent $block */
   $block = $variables['elements']['content']['#block_content'];
 
+  $nodes = [];
   if (Drupal::moduleHandler()->moduleExists('content_hierarchy') && $block->hasField('field_inline_navigation_mode') && $block->get('field_inline_navigation_mode')->value === 'parent') {
     $parent_id = $block->get('field_inline_navigation_parent')->target_id;
     $node = Node::load($parent_id);
-    /** @var \Drupal\content_hierarchy\ContentHierarchyStorage $contentHierarchyStorage */
-    $contentHierarchyStorage = \Drupal::service('content_hierarchy.storage');
-    $content = $contentHierarchyStorage->loadFromEntity($node);
-    $nodes = [];
-    if (!is_null($content)) {
-      $children = $content->getChildren() ?? [];
-      foreach ($children as $child) {
-        $nodes[] = $child->getEntity();
-      }
+    if (!empty($node)) {
+      /** @var \Drupal\content_hierarchy\ContentHierarchyStorage $contentHierarchyStorage */
+      $contentHierarchyStorage = \Drupal::service('content_hierarchy.storage');
+      $content = $contentHierarchyStorage->loadFromEntity($node);
+      if (!is_null($content)) {
+        $children = $content->getChildren() ?? [];
+        foreach ($children as $child) {
+          $nodes[] = $child->getEntity();
+        }
 
-      // Set a cache tags, so it is possible to invalidate it,
-      // if a new node sets the selected parent as it´s parent.
-      if (!empty($variables['#cache']['tags'])) {
-        $variables['#cache']['tags'] = Cache::mergeTags($variables['#cache']['tags'], $contentHierarchyStorage->getContentCacheTags([$content]));
-      }
-      else {
-        $variables['#cache']['tags'] = $contentHierarchyStorage->getContentCacheTags([$content]);
+        // Set a cache tags, so it is possible to invalidate it,
+        // if a new node sets the selected parent as it´s parent.
+        if (!empty($variables['#cache']['tags'])) {
+          $variables['#cache']['tags'] = Cache::mergeTags($variables['#cache']['tags'], $contentHierarchyStorage->getContentCacheTags([$content]));
+        }
+        else {
+          $variables['#cache']['tags'] = $contentHierarchyStorage->getContentCacheTags([$content]);
+        }
       }
     }
   }
