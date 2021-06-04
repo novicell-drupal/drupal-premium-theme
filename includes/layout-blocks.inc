@@ -230,7 +230,7 @@ function premium_theme_preprocess_block__inline_block__inline_navigation(array &
   $block = $variables['elements']['content']['#block_content'];
 
   $nodes = [];
-  if (Drupal::moduleHandler()->moduleExists('content_hierarchy') && $block->hasField('field_inline_navigation_mode') && $block->get('field_inline_navigation_mode')->value === 'parent') {
+  if (Drupal::moduleHandler()->moduleExists('content_hierarchy') && $block->hasField('field_inline_navigation_mode') && $block->get('field_inline_navigation_mode')->value === 'parent' && !empty($block->get('field_inline_navigation_parent')->target_id)) {
     $parent_id = $block->get('field_inline_navigation_parent')->target_id;
     $node = Node::load($parent_id);
     if (!empty($node)) {
