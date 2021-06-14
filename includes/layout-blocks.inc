@@ -70,6 +70,15 @@ function premium_theme_preprocess_block__inline_block__image(array &$variables) 
         $image_style = '3_column';
       }
 
+      if ($block->hasField('field_dynamic_height') && (int) $block->get('field_dynamic_height')->value === 1) {
+        if ($image_style === 'full_width_16_9') {
+          $image_style = 'full_width_flex_height';
+        }
+        else {
+          $image_style .= '_flex_height';
+        }
+      }
+
       $variables['media'] = \Drupal::entityTypeManager()->getViewBuilder('media')->view($media, $image_style);
     }
   }
