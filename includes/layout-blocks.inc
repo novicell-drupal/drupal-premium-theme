@@ -213,7 +213,7 @@ function premium_theme_preprocess_block__inline_block__appetizer(array &$variabl
     $image_style = '3_column';
   }
 
-  if ($block->hasField('field_appetizer_image') && !$block->get('field_appetizer_image')->isEmpty()) {
+  if ($block->hasField('field_appetizer_image') && !$block->get('field_appetizer_image')->isEmpty() && !is_null($block->get('field_appetizer_image')->entity)) {
     $variables['media'] = \Drupal::entityTypeManager()->getViewBuilder('media')->view($block->get('field_appetizer_image')->entity, $image_style);
   }
 }
@@ -238,25 +238,28 @@ function premium_theme_preprocess_block__inline_block__inline_navigation(array &
   /** @var \Drupal\block_content\Entity\BlockContent $block */
   $block = $variables['elements']['content']['#block_content'];
 
-  if (Drupal::moduleHandler()->moduleExists('content_hierarchy') && $block->hasField('field_inline_navigation_mode') && $block->get('field_inline_navigation_mode')->value === 'parent') {
+  $nodes = [];
+  if (Drupal::moduleHandler()->moduleExists('content_hierarchy') && $block->hasField('field_inline_navigation_mode') && $block->get('field_inline_navigation_mode')->value === 'parent' && !empty($block->get('field_inline_navigation_parent')->target_id)) {
     $parent_id = $block->get('field_inline_navigation_parent')->target_id;
-    /** @var \Drupal\content_hierarchy\ContentHierarchyStorage $contentHierarchyStorage */
-    $contentHierarchyStorage = \Drupal::service('content_hierarchy.storage');
-    $content = $contentHierarchyStorage->load($parent_id);
-    $nodes = [];
-    if (!is_null($content)) {
-      $children = $content->getChildren() ?? [];
-      foreach ($children as $child) {
-        $nodes[] = $child->getEntity();
-      }
+    $node = Node::load($parent_id);
+    if (!empty($node)) {
+      /** @var \Drupal\content_hierarchy\ContentHierarchyStorage $contentHierarchyStorage */
+      $contentHierarchyStorage = \Drupal::service('content_hierarchy.storage');
+      $content = $contentHierarchyStorage->loadFromEntity($node);
+      if (!is_null($content)) {
+        $children = $content->getChildren() ?? [];
+        foreach ($children as $child) {
+          $nodes[] = $child->getEntity();
+        }
 
-      // Set a cache tags, so it is possible to invalidate it,
-      // if a new node sets the selected parent as it´s parent.
-      if (!empty($variables['#cache']['tags'])) {
-        $variables['#cache']['tags'] = Cache::mergeTags($variables['#cache']['tags'], $contentHierarchyStorage->getContentCacheTags([$content]));
-      }
-      else {
-        $variables['#cache']['tags'] = $contentHierarchyStorage->getContentCacheTags([$content]);
+        // Set a cache tags, so it is possible to invalidate it,
+        // if a new node sets the selected parent as it´s parent.
+        if (!empty($variables['#cache']['tags'])) {
+          $variables['#cache']['tags'] = Cache::mergeTags($variables['#cache']['tags'], $contentHierarchyStorage->getContentCacheTags([$content]));
+        }
+        else {
+          $variables['#cache']['tags'] = $contentHierarchyStorage->getContentCacheTags([$content]);
+        }
       }
     }
   }
