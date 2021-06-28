@@ -21,7 +21,7 @@ function premium_theme_preprocess_paragraph__basic_hero(array &$variables) {
     $media = $paragraph->get('field_background')->entity;
     if (!is_null($media)) {
       $variables['media_image'] = \Drupal::entityTypeManager()->getViewBuilder('media')->view($media, 'hero');
-      if ($media->bundle() === 'remote_video') {
+      if (in_array($media->bundle(), ['remote_video', 'cdn_video'])) {
         $variables['media'] = \Drupal::entityTypeManager()->getViewBuilder('media')->view($media);
       }
     }
@@ -64,7 +64,7 @@ function premium_theme_preprocess_paragraph__inline_hero(array &$variables) {
     $media = $paragraph->get('field_background')->entity;
     if (!is_null($media)) {
       $variables['media_image'] = \Drupal::entityTypeManager()->getViewBuilder('media')->view($media, 'hero');
-      if ($media->bundle() === 'remote_video') {
+      if (in_array($media->bundle(), ['remote_video', 'cdn_video'])) {
         $variables['media'] = \Drupal::entityTypeManager()->getViewBuilder('media')->view($media);
       }
     }
