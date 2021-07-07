@@ -244,7 +244,7 @@ function premium_theme_preprocess_block__inline_block__inline_navigation(array &
     $parent_id = $block->get('field_inline_navigation_parent')->target_id;
     $node = Node::load($parent_id);
     $lang_id = \Drupal::languageManager()->getCurrentLanguage()->getId();
-    if ($node instanceof TranslatableInterface && $node->hasTranslation($lang_id)) {
+    if ($node instanceof TranslatableInterface && !empty($node->getTranslationLanguages(FALSE)) && $node->hasTranslation($lang_id)) {
       $node = $node->getTranslation($lang_id);
     }
     if (!empty($node)) {
@@ -294,3 +294,4 @@ function premium_theme_preprocess_block__inline_block__inline_navigation(array &
   }
 
 }
+
