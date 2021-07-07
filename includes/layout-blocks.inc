@@ -1,6 +1,7 @@
 <?php
 
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Entity\TranslatableInterface;
 use Drupal\Core\Url;
 use Drupal\Core\TypedData\Exception\MissingDataException;
 use Drupal\node\Entity\Node;
@@ -242,6 +243,10 @@ function premium_theme_preprocess_block__inline_block__inline_navigation(array &
   if (Drupal::moduleHandler()->moduleExists('content_hierarchy') && $block->hasField('field_inline_navigation_mode') && $block->get('field_inline_navigation_mode')->value === 'parent' && !empty($block->get('field_inline_navigation_parent')->target_id)) {
     $parent_id = $block->get('field_inline_navigation_parent')->target_id;
     $node = Node::load($parent_id);
+    $lang_id = \Drupal::languageManager()->getCurrentLanguage()->getId();
+    if ($node instanceof TranslatableInterface && $node->hasTranslation($lang_id)) {
+      $node = $node->getTranslation($lang_id);
+    }
     if (!empty($node)) {
       /** @var \Drupal\content_hierarchy\ContentHierarchyStorage $contentHierarchyStorage */
       $contentHierarchyStorage = \Drupal::service('content_hierarchy.storage');
