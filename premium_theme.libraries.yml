@@ -14,3 +14,9 @@ layout-builder-media:
   css:
     theme:
       dist/css/layout-builder-media-library.css: {}
+
+hero-text-align:
+  version: VERSION
+  css:
+    theme:
+      dist/css/hero-text-align.css: {}

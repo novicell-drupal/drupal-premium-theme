@@ -1,0 +1,11 @@
+.styles--preview--icon .hero--left {
+  background-image: url(../../misc/icons/000000/left-align.svg);
+}
+
+.styles--preview--icon .hero--center {
+  background-image: url(../../misc/icons/000000/center-alignment.svg);
+}
+
+.styles--preview--icon .hero--right {
+  background-image: url(../../misc/icons/000000/right-align.svg);
+}

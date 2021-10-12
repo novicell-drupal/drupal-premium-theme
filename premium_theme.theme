@@ -280,7 +280,7 @@ function premium_theme_preprocess_maintenance_page(array &$variables) {
 }
 
 /**
- * Add theme information to cooke info.
+ * Add theme information to cookie info.
  *
  * @param array $variables
  *   Template variables.

@@ -1,0 +1,10 @@
+hero_text_align:
+  label: Hero text alignment
+  preview_libraries:
+    - styles/styles.preview
+    - premium_theme/hero-text-align
+  preview_style: icon
+  styles:
+    hero--left: Left
+    hero--center: Center
+    hero--right: Right
