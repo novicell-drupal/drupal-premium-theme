@@ -85,6 +85,18 @@ function premium_theme_theme_suggestions_menu_alter(array &$suggestions, array $
 }
 
 /**
+ * Implements hook_theme_suggestions_HOOK_alter() for form templates.
+ *
+ * @param $suggestions
+ * @param $variables
+ */
+function premium_theme_theme_suggestions_form_alter(array &$suggestions, array $variables) {
+  if (isset($variables['element'])) {
+    $suggestions[] = $variables['theme_hook_original'] . '__' . $variables['element']['#form_id'];
+  }
+}
+
+/**
  * Altering the user reset password form.
  *
  * @param array $form
@@ -286,7 +298,7 @@ function premium_theme_preprocess_maintenance_page(array &$variables) {
  *   Template variables.
  */
 function premium_theme_preprocess_cookie_info(array &$variables) {
-  $variables['attributes']->addClass('theme')
+  /*$variables['attributes']->addClass('theme')
     ->addClass('section')
-    ->addClass('theme-secondary');
+    ->addClass('theme-secondary');*/
 }
