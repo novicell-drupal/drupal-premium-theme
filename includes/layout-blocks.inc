@@ -16,30 +16,8 @@ function premium_theme_preprocess_block__inline_block__button(array &$variables)
   /** @var \Drupal\block_content\Entity\BlockContent $block */
   $block = $variables['elements']['content']['#block_content'];
 
-  if ($block->hasField('field_button') && !$block->get('field_button')->isEmpty()) {
-    try {
-      $button = $block->get('field_button')->first();
-
-      if (!is_null($button)) {
-        $button = $button->getValue();
-
-        if (isset($button['uri'], $button['title'])) {
-          $variables['title'] = $button['title'];
-          $variables['url'] = Url::fromUri($button['uri'])->toString();
-
-          if ($block->hasField('field_button_alignment') && !$block->get('field_button_alignment')->isEmpty()) {
-            $variables['alignment'] = $block->get('field_button_alignment')->value;
-          }
-
-          if (isset($button['target_blank']) && (int) $button['target_blank'] === 1) {
-            $variables['target'] = '_blank';
-          }
-        }
-      }
-    }
-    catch (MissingDataException $e) {
-      Drupal::logger('premium_theme')->error($e->getMessage());
-    }
+  if ($block->hasField('field_button_alignment') && !$block->get('field_button_alignment')->isEmpty()) {
+    $variables['content']['field_button'][0]['#options']['attributes']['class'][] = 'button--' . $block->get('field_button_alignment')->value;
   }
 }
 
