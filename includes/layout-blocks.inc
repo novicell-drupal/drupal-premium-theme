@@ -61,7 +61,7 @@ function premium_theme_preprocess_block__inline_block__image(array &$variables) 
       $image_style = '1_column';
       $layout_id = $layout['layout_id'] ?? '';
 
-      if ($layout_id === 'layout_onecol' && isset($layout['settings']['column_width']) && $layout['settings']['column_width'] === 'fullwidth') {
+      if ($layout_id === 'layout_onecol' && isset($layout['settings']['column_width']) && $layout['settings']['column_width'] === 'width-full') {
         $image_style = 'full_width_16_9';
       }
       elseif ($layout_id === 'layout_twocol_section') {
@@ -146,7 +146,7 @@ function premium_theme_preprocess_block__inline_block__video(array &$variables) 
       $image_style = '1_column';
       $layout_id = $layout['layout_id'] ?? '';
 
-      if ($layout_id === 'layout_onecol' && isset($layout['settings']['column_width']) && $layout['settings']['column_width'] === 'fullwidth') {
+      if ($layout_id === 'layout_onecol' && isset($layout['settings']['column_width']) && $layout['settings']['column_width'] === 'width-full') {
         $image_style = 'full_width_16_9';
       }
       elseif ($layout_id === 'layout_twocol_section') {
@@ -200,7 +200,7 @@ function premium_theme_preprocess_block__inline_block__appetizer(array &$variabl
     $variables['is_small_version'] = TRUE;
   }
 
-  if ($layout_id === 'layout_onecol' && isset($layout['settings']['column_width']) && $layout['settings']['column_width'] === 'fullwidth') {
+  if ($layout_id === 'layout_onecol' && isset($layout['settings']['column_width']) && $layout['settings']['column_width'] === 'width-full') {
     $image_style = 'appetiser_wide';
     $variables['display_as_fullwidth'] = TRUE;
   }

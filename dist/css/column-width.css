@@ -1,0 +1,11 @@
+.styles--preview--icon .width-narrow {
+  background-image: url(../../misc/icons/000000/width-narrow.svg);
+}
+
+.styles--preview--icon .width-normal {
+  background-image: url(../../misc/icons/000000/width-normal.svg);
+}
+
+.styles--preview--icon .width-full {
+  background-image: url(../../misc/icons/000000/width-full.svg);
+}

@@ -1,0 +1,19 @@
+.styles--preview--icon .spacing-top-none {
+  background-image: url(../../misc/icons/000000/spacing-top-none.svg);
+}
+
+.styles--preview--icon .spacing-top-small {
+  background-image: url(../../misc/icons/000000/spacing-top-small.svg);
+}
+
+.styles--preview--icon .spacing-top-medium {
+  background-image: url(../../misc/icons/000000/spacing-top-medium.svg);
+}
+
+.styles--preview--icon .spacing-top-large {
+  background-image: url(../../misc/icons/000000/spacing-top-large.svg);
+}
+
+.styles--preview.styles--preview--icon {
+  background-color: #fff;
+}

@@ -20,3 +20,21 @@ hero-text-align:
   css:
     theme:
       dist/css/hero-text-align.css: {}
+
+column-spacing-top:
+  version: VERSION
+  css:
+    theme:
+      dist/css/column-spacing-top.css: {}
+
+column-spacing-bottom:
+  version: VERSION
+  css:
+    theme:
+      dist/css/column-spacing-bottom.css: {}
+
+column-width:
+  version: VERSION
+  css:
+    theme:
+      dist/css/column-width.css: {}

@@ -8,3 +8,38 @@ hero_text_align:
     hero--left: Left
     hero--center: Center
     hero--right: Right
+
+column_spacing_top:
+  label: Column spacing top
+  preview_libraries:
+    - styles/styles.preview
+    - premium_theme/column-spacing-top
+  preview_style: icon
+  styles:
+    spacing-top-none: None
+    spacing-top-small: Small
+    spacing-top-medium: Medium
+    spacing-top-large: Large
+
+column_spacing_bottom:
+  label: Column spacing bottom
+  preview_libraries:
+    - styles/styles.preview
+    - premium_theme/column-spacing-bottom
+  preview_style: icon
+  styles:
+    spacing-bottom-none: None
+    spacing-bottom-small: Small
+    spacing-bottom-medium: Medium
+    spacing-bottom-large: Large
+
+column_width:
+  label: Column width
+  preview_libraries:
+    - styles/styles.preview
+    - premium_theme/column-width
+  preview_style: icon
+  styles:
+    width-narrow: Narrow
+    width-normal: Normal
+    width-full: Full width
