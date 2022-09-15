@@ -1,0 +1,144 @@
+body.gin--vertical-toolbar.toolbar-tray-open.toolbar-horizontal.toolbar-fixed {
+  padding-top: 0 !important;
+  padding-bottom: 4em;
+}
+
+.layout-builder {
+  &__layout {
+    margin-top: 40px;
+  }
+
+  &__section--header {
+    position: absolute;
+    top: -39px;
+    left: 0;
+    right: 0;
+    max-width: 100%;
+    height: 40px;
+    margin: 0;
+    background-color: var(--colorGinPrimary);
+    border-radius: 6px 6px 0 0;
+  }
+
+  .layout-builder__link--add {
+    background-color: #fff !important;
+  }
+
+  .layout-builder__link--configure {
+    top: 50%;
+    right: 50px;
+    left: auto;
+    width: 24px;
+    height: 24px;
+    padding: 9px;
+    border-radius: 6px;
+    transform: translateY(-50%);
+    background: var(--colorGinPrimaryActive);
+    text-indent: -9999px;
+    display: inline-block;
+    -webkit-mask-image: none;
+    mask-image: none;
+
+    &:hover {
+      background: var(--colorGinPrimaryHover) !important;
+
+      &::after {
+        background-color: transparent !important;
+      }
+    }
+  }
+
+  .layout-builder__link--configure::after {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: transparent !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='17' height='17' viewBox='0 0 17 17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='edit_24px'%3E%3Cpath id='icon/image/edit_24px' fill-rule='evenodd' clip-rule='evenodd' d='M12.5083 2.125C12.3312 2.125 12.1471 2.19583 12.0125 2.33042L10.7162 3.62667L13.3725 6.28292L14.6687 4.98667C14.945 4.71042 14.945 4.26417 14.6687 3.98792L13.0112 2.33042C12.8696 2.18875 12.6925 2.125 12.5083 2.125ZM9.95831 6.38916L10.61 7.04083L4.19248 13.4583H3.54081V12.8067L9.95831 6.38916ZM2.12415 12.2187L9.95831 4.38458L12.6146 7.04083L4.7804 14.875H2.12415V12.2187Z' fill='white'/%3E%3C/g%3E%3C/svg%3E%0A");
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .layout-builder__link--remove {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    left: auto;
+    width: 24px;
+    height: 24px;
+    padding: 9px;
+    border-radius: 6px;
+    transform: translateY(-50%);
+    background-color: var(--colorGinPrimaryActive) !important;
+    -webkit-mask-image: none;
+    mask-image: none;
+
+    &:hover {
+      background-color: var(--colorGinPrimaryHover) !important;
+
+      &::after {
+        background-color: transparent !important;
+      }
+    }
+  }
+
+  .layout-builder__link--remove::after {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    padding: 6px;
+    background-color: transparent !important;
+    background-image: url("data:image/svg+xml,%3Csvg width='17' height='17' viewBox='0 0 17 17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.24996 13.4583C4.24996 14.2375 4.88746 14.875 5.66663 14.875H11.3333C12.1125 14.875 12.75 14.2375 12.75 13.4583V4.95833H4.24996V13.4583ZM5.66663 6.375H11.3333V13.4583H5.66663V6.375ZM10.9791 2.83333L10.2708 2.125H6.72913L6.02079 2.83333H3.54163V4.25H13.4583V2.83333H10.9791Z' fill='white'/%3E%3C/svg%3E%0A");
+    background-repeat: no-repeat;
+    background-position: center;
+    content: '';
+    z-index: -1;
+  }
+}
+
+.glb-toolbar {
+  position: fixed;
+  top: auto !important;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  .glb-form {
+    .form-actions {
+      a.button {
+        font-weight: 400 !important;
+        line-height: 1em !important;
+        padding: calc(1em - 2px) calc(1.5em - 2px) !important;
+        border-radius: 6px !important;
+        margin-right: .75em;
+        min-height: auto;
+      }
+    }
+  }
+
+  .glb-button--primary,
+  .glb-button--primary:not(:focus) {
+    box-shadow: 0 0 0 transparent !important;
+  }
+}
+
+#drupal-off-canvas.ui-dialog-content div {
+  color: var(--theme-color);
+}
+
+.form-styles .glb-form-checkboxes {
+  display: none;
+}
+
+.glb-messages {
+  box-shadow: 0 10px 30px rgb(0 0 0 / 30%) !important;
+
+  &.toastify-bottom {
+    bottom: 4em !important;
+  }
+}
+
+.js-media-library-views-form.glb-form {
+  flex-grow: 1;
+}

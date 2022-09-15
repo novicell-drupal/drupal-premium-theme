@@ -15,6 +15,12 @@ layout-builder-media:
     theme:
       dist/css/layout-builder-media-library.css: {}
 
+layout-builder-gin:
+  version: VERSION
+  css:
+    theme:
+      dist/css/layout-builder-gin.css: {}
+
 hero-text-align:
   version: VERSION
   css:
