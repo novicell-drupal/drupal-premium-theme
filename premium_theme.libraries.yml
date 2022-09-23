@@ -20,6 +20,10 @@ layout-builder-gin:
   css:
     theme:
       dist/css/layout-builder-gin.css: {}
+  js:
+    dist/js/layout-builder-gin.js: {}
+  dependencies:
+    - core/drupal
 
 hero-text-align:
   version: VERSION
