@@ -1,16 +1,16 @@
-.styles--preview--icon .spacing-bottom-none {
+.styles--preview--icon .section--spacing-bottom-none {
   background-image: url(../../misc/icons/000000/spacing-bottom-none.svg);
 }
 
-.styles--preview--icon .spacing-bottom-small {
+.styles--preview--icon .section--spacing-bottom-small {
   background-image: url(../../misc/icons/000000/spacing-bottom-small.svg);
 }
 
-.styles--preview--icon .spacing-bottom-medium {
+.styles--preview--icon .section--spacing-bottom-medium {
   background-image: url(../../misc/icons/000000/spacing-bottom-medium.svg);
 }
 
-.styles--preview--icon .spacing-bottom-large {
+.styles--preview--icon .section--spacing-bottom-large {
   background-image: url(../../misc/icons/000000/spacing-bottom-large.svg);
 }
 

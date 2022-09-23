@@ -16,10 +16,10 @@ column_spacing_top:
     - premium_theme/column-spacing-top
   preview_style: icon
   styles:
-    spacing-top-none: None
-    spacing-top-small: Small
-    spacing-top-medium: Medium
-    spacing-top-large: Large
+    section--spacing-top-none: None
+    section--spacing-top-small: Small
+    section--spacing-top-medium: Medium
+    section--spacing-top-large: Large
 
 column_spacing_bottom:
   label: Column spacing bottom
@@ -28,10 +28,10 @@ column_spacing_bottom:
     - premium_theme/column-spacing-bottom
   preview_style: icon
   styles:
-    spacing-bottom-none: None
-    spacing-bottom-small: Small
-    spacing-bottom-medium: Medium
-    spacing-bottom-large: Large
+    section--spacing-bottom-none: None
+    section--spacing-bottom-small: Small
+    section--spacing-bottom-medium: Medium
+    section--spacing-bottom-large: Large
 
 column_width:
   label: Column width
@@ -40,6 +40,6 @@ column_width:
     - premium_theme/column-width
   preview_style: icon
   styles:
-    width-narrow: Narrow
-    width-normal: Normal
-    width-full: Full width
+    section--width-narrow: Narrow
+    section--width-normal: Normal
+    section--width-full: Full width
