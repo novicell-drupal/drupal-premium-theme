@@ -1,11 +1,14 @@
 .styles--preview--icon .hero--left {
-  background-image: url(../../misc/icons/000000/left-align.svg);
+  -webkit-mask-image: url(../../misc/icons/000000/left-align.svg);
+  mask-image: url(../../misc/icons/000000/left-align.svg);
 }
 
 .styles--preview--icon .hero--center {
-  background-image: url(../../misc/icons/000000/center-alignment.svg);
+  -webkit-mask-image: url(../../misc/icons/000000/center-alignment.svg);
+  mask-image: url(../../misc/icons/000000/center-alignment.svg);
 }
 
 .styles--preview--icon .hero--right {
-  background-image: url(../../misc/icons/000000/right-align.svg);
+  -webkit-mask-image: url(../../misc/icons/000000/right-align.svg);
+  mask-image: url(../../misc/icons/000000/right-align.svg);
 }

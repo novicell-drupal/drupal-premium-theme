@@ -1,19 +1,19 @@
 .styles--preview--icon .section--spacing-top-none {
-  background-image: url(../../misc/icons/000000/spacing-top-none.svg);
+  -webkit-mask-image: url(../../misc/icons/000000/spacing-top-none.svg);
+  mask-image: url(../../misc/icons/000000/spacing-top-none.svg);
 }
 
 .styles--preview--icon .section--spacing-top-small {
-  background-image: url(../../misc/icons/000000/spacing-top-small.svg);
+  -webkit-mask-image: url(../../misc/icons/000000/spacing-top-small.svg);
+  mask-image: url(../../misc/icons/000000/spacing-top-small.svg);
 }
 
 .styles--preview--icon .section--spacing-top-medium {
-  background-image: url(../../misc/icons/000000/spacing-top-medium.svg);
+  -webkit-mask-image: url(../../misc/icons/000000/spacing-top-medium.svg);
+  mask-image: url(../../misc/icons/000000/spacing-top-medium.svg);
 }
 
 .styles--preview--icon .section--spacing-top-large {
-  background-image: url(../../misc/icons/000000/spacing-top-large.svg);
-}
-
-.styles--preview.styles--preview--icon {
-  background-color: #fff;
+  -webkit-mask-image: url(../../misc/icons/000000/spacing-top-large.svg);
+  mask-image: url(../../misc/icons/000000/spacing-top-large.svg);
 }
