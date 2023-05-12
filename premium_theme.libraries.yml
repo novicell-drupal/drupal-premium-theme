@@ -9,6 +9,12 @@ layout-builder:
     theme:
       dist/css/layout-builder.css: {}
 
+layout-builder-gin:
+  version: VERSION
+  css:
+    theme:
+      dist/css/layout-builder-gin.css: {}
+
 layout-builder-media:
   version: VERSION
   css:
