@@ -227,7 +227,7 @@ function premium_theme_preprocess_block(array &$variables) {
  *   Template variables.
  */
 function premium_theme_preprocess_image(array &$variables) {
-  $element_classes = $variables['attributes']['class'];
+  $element_classes = $variables['attributes']['class'] ?? NULL;
 
   if ($element_classes instanceof AttributeArray) {
     $classes = $element_classes->value();
