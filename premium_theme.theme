@@ -2,6 +2,7 @@
 
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Template\AttributeArray;
 use Drupal\Core\Url;
 use Drupal\block\Entity\Block;
 use Drupal\Core\Template\Attribute;
@@ -233,7 +234,7 @@ function premium_theme_preprocess_image(array &$variables) {
     $implode = implode(' ', $classes);
     $explode = explode(' ', $implode);
 
-    if (!empty($explode) && in_array('lazyload', $explode, TRUE)) {
+    if ($explode && in_array('lazyload', $explode, TRUE)) {
       $variables['attributes']['data-src'] = $variables['attributes']['src'];
       $variables['attributes']['data-query-obj'] = '{}';
       unset($variables['attributes']['src']);

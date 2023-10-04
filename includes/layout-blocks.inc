@@ -270,9 +270,11 @@ function premium_theme_preprocess_block__inline_block__inline_navigation(array &
   }
   else {
     $node_ids = [];
-    if ($block->hasField('field_inline_navigation_pages')) {
+    if ($block->hasField('field_inline_navigation_pages') && !$block->get('field_inline_navigation_pages')->isEmpty()) {
       foreach ($block->get('field_inline_navigation_pages') as $value) {
-        $node_ids[] = $value->target_id;
+        if (!empty($value->target_id)) {
+          $node_ids[] = $value->target_id;
+        }
       }
       $nodes = Node::loadMultiple($node_ids);
     }
