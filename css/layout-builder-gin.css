@@ -141,21 +141,18 @@
   padding: 0;
   border: none;
 
-  &.is-layout-builder-highlighted {
-    /* stylelint-disable */
-    margin: 0 5px !important;
-    /* stylelint-enable */
-    border: none;
-
-    .layout-builder__region {
-      outline: none;
-    }
+  .ui-widget-content {
+    color: var(--gin-color-title);
   }
 
   .layout-builder__layout {
     text-align: initial;
     margin-right: 5px;
     margin-left: 5px;
+
+    &.is-layout-builder-highlighted {
+      border-color: var(--gin-color-focus);
+    }
 
     .layout__region {
       display: flex;
@@ -207,8 +204,7 @@
     display: block;
 
     &.is-layout-builder-highlighted {
-      border: none;
-      margin: 0;
+      border-color: var(--gin-color-focus);
     }
   }
 
@@ -240,9 +236,7 @@
       flex-direction: row;
 
       .is-layout-builder-highlighted & {
-        -moz-box-shadow: inset 0 0 4px 2px #e1d915;
-        -webkit-box-shadow: inset 0 0 4px 2px #e1d915;
-        box-shadow: inset 0 0 4px 2px #e1d915;
+        border-color: var(--gin-color-focus);
       }
 
       .layout-builder__section-label {
@@ -307,6 +301,10 @@
     margin-top: .5em;
     margin-bottom: .5em;
 
+    &.is-layout-builder-highlighted {
+      border-color: var(--gin-color-focus);
+    }
+
     &::before {
       content: "";
       border-bottom: 2px dashed var(--gin-bg-header);
@@ -336,6 +334,7 @@
   background: var(--gin-bg-layer);
   color: var(--gin-color-text);
   border-width: 0;
+  border-radius: 0;
 
   .inline-block-create-button,
   .inline-block-list__item {
@@ -349,13 +348,22 @@
     color: var(--gin-color-title);
   }
 
+  .ui-dialog-titlebar {
+    border: 0 solid #ddd;
+  }
+
   .ui-dialog-titlebar,
   .inline-block-create-button {
-    padding: var(--gin-spacing-m) var(--gin-spacing-xxl);
+    padding: var(--gin-spacing-m) var(--gin-spacing-m) var(--gin-spacing-m) var(--gin-spacing-xxl);
+  }
+
+  .inline-block-create-button {
+    outline: none;
   }
 
   .ui-dialog-titlebar-close {
     margin-top: -2px;
+    outline: none;
   }
 
   & summary {
@@ -384,6 +392,7 @@
 
   & a {
     color: var(--gin-color-primary);
+    outline: none;
   }
 
   & select {
