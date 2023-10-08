@@ -291,12 +291,3 @@ function premium_theme_preprocess_cookie_info(array &$variables) {
     ->addClass('section')
     ->addClass('theme-secondary');*/
 }
-
-function premium_theme_preprocess_page(array &$variables) {
-  $theme_config = \Drupal::config('system.theme');
-  if ($theme_config->get('admin') === 'gin') {
-    $variables['#attached']['library'][] = 'premium_theme/layout-builder-gin';
-  } else {
-    $variables['#attached']['library'][] = 'premium_theme/layout-builder';
-  }
-}

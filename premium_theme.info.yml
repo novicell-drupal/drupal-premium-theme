@@ -16,3 +16,7 @@ libraries-override:
     css:
       base:
         misc/dialog/off-canvas/css/reset.css: false
+
+libraries-extend:
+  gin/gin_base:
+    - premium_theme/layout-builder-gin
