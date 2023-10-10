@@ -19,4 +19,4 @@ libraries-override:
 
 libraries-extend:
   gin/gin_base:
-    - premium_theme/layout-builder-gin
+    - premium_theme/custom-gin

@@ -68,7 +68,7 @@
       box-sizing: border-box;
       line-height: 1.15;
       flex-grow: 0;
-      color: var(--gin-color-title);
+      color: #fff !important; /* stylelint-disable-line declaration-no-important */
       font-family: "Open Sans", sans-serif;
       font-size: .9em;
       text-decoration: none;
@@ -86,17 +86,17 @@
       &:hover .icon {
         display: none;
       }
-    }
 
-    .button--primary {
-      background: var(--gin-color-primary);
-      color: #000;
-      font-weight: bold;
+      &--primary {
+        background: var(--gin-color-primary);
+        color: var(--gin-color-button-text) !important; /* stylelint-disable-line declaration-no-important */
+        font-weight: bold;
 
-      &:hover {
-        background: var(--gin-color-primary-hover);
-        color: #000;
-        text-decoration: underline;
+        &:hover {
+          background: var(--gin-color-primary-hover);
+          color: var(--gin-color-button-text) !important; /* stylelint-disable-line declaration-no-important */
+          text-decoration: underline;
+        }
       }
     }
 
@@ -106,11 +106,11 @@
     }
 
     & #edit-preview-toggle {
-      padding: 10px 15px;
       font-size: 1em;
 
       .form-item {
         display: flex;
+        margin: 7px 8px 0 0;
 
         .label {
           margin-left: 5px;
@@ -141,7 +141,7 @@
   padding: 0;
   border: none;
 
-  .ui-widget-content {
+  .ui.ui-widget-content {
     color: var(--gin-color-title);
   }
 
@@ -345,6 +345,10 @@
     border-bottom: 1px solid var(--gin-bg-header);
   }
 
+  .inline-block-list li {
+    padding: 0;
+  }
+
   .ui-dialog-content {
     color: var(--gin-color-text);
   }
@@ -444,6 +448,15 @@
       }
     }
   }
+}
+
+.ajax-progress,
+.ajax-progress-throbber {
+  border-radius: 0 !important; /* stylelint-disable-line declaration-no-important */
+  background: none !important; /* stylelint-disable-line declaration-no-important */
+  box-shadow: none !important; /* stylelint-disable-line declaration-no-important */
+  border: none !important; /* stylelint-disable-line declaration-no-important */
+  font-size: var(--gin-font-size-s) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .ui-dialog .styles--preview {
@@ -562,10 +575,19 @@
     }
   }
 
-  .ck.ck-editor__main > .ck-editor__editable {
-    color: var(--gin-color-text);
-    background: var(--gin-bg-input);
-    border: 1px solid var(--gin-border-color-form-element);
+  .ck {
+    &-toolbar {
+      &_grouping {
+        border-radius: 8px 8px 0 0;
+      }
+    }
+
+    &-editor__main > .ck-editor__editable {
+      color: var(--gin-color-text);
+      background: var(--gin-bg-input);
+      border: 1px solid var(--gin-border-color-form-element);
+      border-radius: 0 0 8px 8px;
+    }
   }
 
   input.form-text,
@@ -650,6 +672,39 @@
     &--ghost {
       color: var(--gin-color-primary);
       background: none;
+    }
+  }
+
+  & fieldset {
+    color: var(--gin-color-text-light);
+    margin: var(--gin-spacing-m) 0;
+    padding-top: var(--gin-spacing-xs);
+    padding-left: 0;
+    padding-right: 0;
+    background: transparent;
+    border: 1px solid var(--gin-border-color);
+    border-radius: var(--gin-border-m);
+    box-shadow: none;
+
+    & legend {
+      font-size: var(--gin-font-size-s);
+      font-weight: var(--gin-font-weight-semibold);
+      color: var(--gin-color-title);
+      margin-bottom: 8px;
+      padding: 16px 24px;
+      display: block;
+      width: 100%;
+      float: left;
+      line-height: 1.2;
+      position: relative;
+      background: transparent;
+    }
+
+    .fieldset-wrapper {
+      display: block;
+      width: 100%;
+      float: left;
+      margin: 0 24px 28px;
     }
   }
 }
