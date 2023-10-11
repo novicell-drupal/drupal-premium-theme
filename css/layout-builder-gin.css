@@ -343,6 +343,10 @@
   .inline-block-list__item {
     color: var(--gin-color-title);
     border-bottom: 1px solid var(--gin-bg-header);
+
+    &:hover {
+      background-color: var(--gin-bg-header);
+    }
   }
 
   .inline-block-list li {
