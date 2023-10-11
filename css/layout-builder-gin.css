@@ -448,6 +448,10 @@
       }
     }
   }
+
+  .draggable:hover {
+    background-color: var(--gin-bg-header);
+  }
 }
 
 .ajax-progress,
@@ -704,7 +708,8 @@
       display: block;
       width: 100%;
       float: left;
-      margin: 0 24px 28px;
+      margin: 0;
+      padding: 0 24px 28px;
     }
   }
 }
@@ -716,4 +721,16 @@
 .ui-dialog:not(.ui-dialog-position-side) .ui-dialog-content {
   max-height: calc(100% - 58px) !important; /* stylelint-disable-line declaration-no-important */
   min-height: calc(100% - 58px) !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.layout-builder-components-table {
+  a.tabledrag-handle .handle {
+    width: 24px;
+    height: 30px;
+    background-position: 4px 10px;
+
+    &::after {
+      background: none;
+    }
+  }
 }

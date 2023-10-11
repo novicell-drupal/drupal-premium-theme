@@ -9,7 +9,7 @@
   padding: 8px 24px 24px;
   background: var(--gin-bg-layer2);
   border: 1px solid var(--gin-border-color-layer);
-  border-radius: var(--details-border-size-radius);
+  border-radius: var(--gin-border-m);
   box-shadow: 0 6px 16px var(--gin-border-color-layer);
 
   input.form-submit {
@@ -121,10 +121,11 @@
   position: relative;
   display: flex;
   flex-wrap: wrap;
+  flex-direction: column;
   justify-content: space-between;
 
   .view-header {
-    align-self: flex-end;
+    align-self: flex-start;
     margin: 1em 0;
     text-align: right;
     padding: var(--gin-spacing-m);
@@ -195,8 +196,16 @@
       padding: .5rem;
       vertical-align: top;
 
-      @media screen and (min-width: 45em) {
+      @media screen and (min-width: 60em) {
         width: 33.3%;
+      }
+
+      @media screen and (min-width: 77em) {
+        width: 25%;
+      }
+
+      @media screen and (min-width: 90em) {
+        width: 20%;
       }
 
       .js-click-to-select-checkbox {
@@ -214,8 +223,10 @@
         border-radius: var(--gin-border-xl);
         overflow: hidden;
 
-        .checked & {
-          border: 2px solid var(--gin-color-primary);
+        &:hover {
+          border-color: var(--gin-color-text);
+          box-shadow: 0 0 0 2px var(--gin-color-text);
+          cursor: pointer;
         }
 
         & span,
@@ -235,6 +246,11 @@
           height: 100%;
           object-fit: cover;
         }
+      }
+
+      &.checked .js-click-to-select-trigger {
+        border-color: var(--gin-color-primary);
+        box-shadow: 0 0 0 2px var(--gin-color-primary);
       }
     }
   }
