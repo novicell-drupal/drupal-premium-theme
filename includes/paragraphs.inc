@@ -2,6 +2,7 @@
 
 use Drupal\Core\TypedData\Exception\MissingDataException;
 use Drupal\Core\Url;
+use Drupal\paragraphs\Entity\Paragraph;
 
 /**
  * Change hero paragraph, add media and page title.
@@ -10,7 +11,7 @@ use Drupal\Core\Url;
  *   Theme variables.
  */
 function premium_theme_preprocess_paragraph__basic_hero(array &$variables) {
-  /** @var \Drupal\paragraphs\Entity\Paragraph $paragraphs */
+  /** @var Paragraph $paragraph */
   $paragraph = $variables['elements']['#paragraph'];
 
   if (isset($variables['elements']['#title'])) {
@@ -57,7 +58,7 @@ function premium_theme_preprocess_paragraph__basic_hero(array &$variables) {
  *   Theme variables.
  */
 function premium_theme_preprocess_paragraph__inline_hero(array &$variables) {
-  /** @var \Drupal\paragraphs\Entity\Paragraph $paragraphs */
+  /** @var Paragraph $paragraph */
   $paragraph = $variables['elements']['#paragraph'];
 
   if ($paragraph->hasField('field_background') && !$paragraph->get('field_background')->isEmpty()) {

@@ -2,6 +2,7 @@
 
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Template\AttributeArray;
 use Drupal\Core\Url;
 use Drupal\block\Entity\Block;
 use Drupal\Core\Template\Attribute;
@@ -87,7 +88,7 @@ function premium_theme_theme_suggestions_form_alter(array &$suggestions, array $
  *
  * @param array $form
  *   Form render array.
- * @param \Drupal\Core\Form\FormStateInterface $form_state
+ * @param FormStateInterface $form_state
  *   Form state.
  */
 function premium_theme_form_search_form_alter(array &$form, FormStateInterface $form_state) {
@@ -226,12 +227,14 @@ function premium_theme_preprocess_block(array &$variables) {
  *   Template variables.
  */
 function premium_theme_preprocess_image(array &$variables) {
-  if (isset($variables['attributes']['class'])) {
-    $classes = $variables['attributes']['class'];
+  $element_classes = $variables['attributes']['class'] ?? NULL;
+
+  if ($element_classes instanceof AttributeArray) {
+    $classes = $element_classes->value();
     $implode = implode(' ', $classes);
     $explode = explode(' ', $implode);
 
-    if (!empty($explode) && in_array('lazyload', $explode, TRUE)) {
+    if ($explode && in_array('lazyload', $explode, TRUE)) {
       $variables['attributes']['data-src'] = $variables['attributes']['src'];
       $variables['attributes']['data-query-obj'] = '{}';
       unset($variables['attributes']['src']);
