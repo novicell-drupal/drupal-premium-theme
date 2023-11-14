@@ -9,11 +9,13 @@ layout-builder:
     theme:
       dist/css/layout-builder.css: {}
 
-layout-builder-media:
+custom-gin:
   version: VERSION
   css:
     theme:
-      dist/css/layout-builder-media-library.css: {}
+      dist/css/dialog-gin.css: {}
+      dist/css/layout-builder-gin.css: {}
+      dist/css/media-library-gin.css: {}
 
 hero-text-align:
   version: VERSION
