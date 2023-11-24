@@ -58,7 +58,7 @@
   background-position: 100% 50%;
 }
 
-.form-item {
+.views-exposed-form .form-item {
   max-width: 100%;
   margin: 12px 8px 0 0;
   font-family: var(--gin-font);
