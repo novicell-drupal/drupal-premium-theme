@@ -16,27 +16,3 @@ custom-gin:
       dist/css/dialog-gin.css: {}
       dist/css/layout-builder-gin.css: {}
       dist/css/media-library-gin.css: {}
-
-hero-text-align:
-  version: VERSION
-  css:
-    theme:
-      dist/css/hero-text-align.css: {}
-
-column-spacing-top:
-  version: VERSION
-  css:
-    theme:
-      dist/css/column-spacing-top.css: {}
-
-column-spacing-bottom:
-  version: VERSION
-  css:
-    theme:
-      dist/css/column-spacing-bottom.css: {}
-
-column-width:
-  version: VERSION
-  css:
-    theme:
-      dist/css/column-width.css: {}
