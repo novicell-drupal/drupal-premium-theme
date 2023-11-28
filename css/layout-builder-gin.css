@@ -723,8 +723,8 @@
 }
 
 .ui-dialog:not(.ui-dialog-position-side) .ui-dialog-content {
-  max-height: calc(100% - 58px) !important; /* stylelint-disable-line declaration-no-important */
-  min-height: calc(100% - 58px) !important; /* stylelint-disable-line declaration-no-important */
+  max-height: calc(85vh - 58px) !important; /* stylelint-disable-line declaration-no-important */
+  min-height: calc(85vh - 58px) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .layout-builder-components-table {
