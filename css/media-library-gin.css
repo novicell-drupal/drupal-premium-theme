@@ -261,9 +261,8 @@
 
 .ui-dialog.media-library-widget-modal {
   .ui-dialog-content {
-    height: calc(100% - 131px) !important; /* stylelint-disable-line declaration-no-important */
-    max-height: none !important; /* stylelint-disable-line declaration-no-important */
-    min-height: 0 !important; /* stylelint-disable-line declaration-no-important */
+    max-height: calc(85vh - 131px) !important; /* stylelint-disable-line declaration-no-important */
+    min-height: calc(85vh - 131px) !important; /* stylelint-disable-line declaration-no-important */
     color: var(--gin-color-text);
     background: var(--gin-bg-layer) !important; /* stylelint-disable-line declaration-no-important */
 
