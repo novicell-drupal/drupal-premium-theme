@@ -699,7 +699,7 @@
       font-weight: var(--gin-font-weight-semibold);
       color: var(--gin-color-title);
       margin-bottom: 8px;
-      padding: 16px 24px;
+      padding: 0 24px;
       display: block;
       width: 100%;
       float: left;
