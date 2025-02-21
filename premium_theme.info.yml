@@ -2,8 +2,8 @@ name: Premium theme
 type: theme
 description: 'Premium theme'
 package: Drupal Premium
-version: 2.0.0
-core_version_requirement: ^8.8 || ^9 || ^10
+version: "1.3"
+core_version_requirement: ^8.8 || ^9 || ^10 || ^11
 base theme: false
 
 libraries:
