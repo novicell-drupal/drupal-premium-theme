@@ -1,7 +1,42 @@
 .ui-dialog.ui-dialog-position-side {
+  padding: 0 !important;
+
+  .ui-dialog-titlebar {
+    margin: 0 !important;
+  }
+
   .ui-dialog-content {
-    margin: 0 calc(-1 * var(--off-canvas-padding)) calc(-1 * var(--off-canvas-padding));
+    margin: 0 !important;
+    padding: .75rem !important;
     background: none !important;
     color: #fff;
+
+    .label {
+      margin-bottom: .25rem;
+    }
+  }
+
+  .layout-builder-configure-section {
+    padding: 0 !important;
+  }
+
+  .inline-block-create-button,
+  .inline-block-list__item {
+    margin: 0 !important;
+  }
+
+  .inline-block-list {
+    margin: -0.75rem -0.75rem 1rem !important;
+  }
+
+  .block-categories {
+    details {
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    summary {
+      margin: 0 !important;
+    }
   }
 }
