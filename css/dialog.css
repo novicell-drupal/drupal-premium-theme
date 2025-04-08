@@ -2,5 +2,6 @@
   .ui-dialog-content {
     margin: 0 calc(-1 * var(--off-canvas-padding)) calc(-1 * var(--off-canvas-padding));
     background: none !important;
+    color: #fff;
   }
 }
