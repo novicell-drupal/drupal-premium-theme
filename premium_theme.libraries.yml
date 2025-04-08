@@ -3,16 +3,32 @@ lazyload:
   js:
     dist/js/lazyload.js: {}
 
+dialog:
+  version: VERSION
+  css:
+    theme:
+      dist/css/dialog.css: {}
+
 layout-builder:
   version: VERSION
   css:
     theme:
       dist/css/layout-builder.css: {}
 
-custom-gin:
+layout-builder-form:
   version: VERSION
   css:
     theme:
-      dist/css/dialog-gin.css: {}
-      dist/css/layout-builder-gin.css: {}
-      dist/css/media-library-gin.css: {}
+      dist/css/layout-builder-form.css: {}
+
+layout-builder-form-confirmation:
+  version: VERSION
+  css:
+    theme:
+      dist/css/layout-builder-form-confirmation.css: {}
+
+status-messages:
+  version: VERSION
+  css:
+    theme:
+      dist/css/status-messages.css: {}

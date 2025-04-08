@@ -1,0 +1,24 @@
+{#
+/**
+ * @file
+ * Default theme implementation for a 'form' element.
+ *
+ * Available variables
+ * - attributes: A list of HTML attributes for the wrapper element.
+ * - children: The child elements of the form.
+ *
+ * @see template_preprocess_form()
+ *
+ * @ingroup themeable
+ */
+#}
+{{ attach_library('premium_theme/layout-builder-form-confirmation') }}
+
+<div class="layout-builder-form__wrapper">
+  <div class="container">
+    <h2>{{ 'Discard changes'|t }}</h2>
+    <form{{ attributes }}>
+      {{ children }}
+    </form>
+  </div>
+</div>

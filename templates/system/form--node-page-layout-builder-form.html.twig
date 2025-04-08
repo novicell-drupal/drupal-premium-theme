@@ -1,0 +1,25 @@
+{#
+/**
+ * @file
+ * Default theme implementation for a 'form' element.
+ *
+ * Available variables
+ * - attributes: A list of HTML attributes for the wrapper element.
+ * - children: The child elements of the form.
+ *
+ * @see template_preprocess_form()
+ *
+ * @ingroup themeable
+ */
+#}
+{{ attach_library('premium_theme/layout-builder-form') }}
+{{ attach_library('premium_theme/layout-builder') }}
+{{ attach_library('premium_theme/dialog') }}
+
+<div class="layout-builder-form__wrapper">
+  <div class="container">
+    <form{{ attributes }}>
+      {{ children }}
+    </form>
+  </div>
+</div>

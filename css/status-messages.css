@@ -1,0 +1,24 @@
+.messages {
+  position: relative;
+  display: block;
+  padding: 10px;
+  color: #000;
+  font-size: 14px;
+  text-align: center;
+  background-color: #c6c6c6;
+
+  &--status {
+    color: #3c763d;
+    background: #dff0d8;
+  }
+
+  &--warning {
+    color: #8a6d3b;
+    background: #fcf8e3;
+  }
+
+  &--error {
+    color: #763c3c;
+    background: #fce3e3;
+  }
+}
