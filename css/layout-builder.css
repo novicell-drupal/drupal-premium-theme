@@ -31,7 +31,7 @@
     background-color: #fff;
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 16px;
+    background-size: 14px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, .15);
 
     &:hover {
