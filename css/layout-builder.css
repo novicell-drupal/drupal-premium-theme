@@ -22,7 +22,8 @@
     display: inline-block;
     width: 32px !important;
     height: 32px !important;
-    margin-right: 6px;
+    margin: 0 6px 0 0 !important;
+    font-size: 16px;
     border: 1px solid #d4d4d8;
     border-radius: 50%;
     box-sizing: border-box;
