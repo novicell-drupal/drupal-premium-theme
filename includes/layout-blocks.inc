@@ -14,10 +14,12 @@ use Drupal\node\Entity\Node;
  *   Template variables.
  */
 function premium_theme_preprocess_block__inline_block(array &$variables) {
-  if (!isset($variables['content']['#layout']['settings']['column_width'])) {
-    return;
+  if (isset($variables['elements']['content']['#layout']['layout_id'])) {
+    $variables['layout_section_id'] = $variables['elements']['content']['#layout']['layout_id'];
   }
-  $variables['section_width'] = $variables['content']['#layout']['settings']['column_width'];
+  if (isset($variables['content']['#layout']['settings']['column_width'])) {
+    $variables['section_width'] = $variables['content']['#layout']['settings']['column_width'];
+  }
 }
 
 /**
