@@ -9,7 +9,6 @@ use Drupal\Core\Template\Attribute;
 use Drupal\node\NodeInterface;
 
 require_once __DIR__ . '/includes/layout-blocks.inc';
-require_once __DIR__ . '/includes/paragraphs.inc';
 
 /**
  * Input preprocess for adding checkbox, radio or input classes.

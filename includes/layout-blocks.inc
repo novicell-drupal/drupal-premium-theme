@@ -1,10 +1,24 @@
 <?php
 
+use Drupal\block_content\Entity\BlockContent;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\TranslatableInterface;
 use Drupal\Core\Url;
 use Drupal\Core\TypedData\Exception\MissingDataException;
 use Drupal\node\Entity\Node;
+
+/**
+ * Layout block preprocess.
+ *
+ * @param array $variables
+ *   Template variables.
+ */
+function premium_theme_preprocess_block__inline_block(array &$variables) {
+  if (!isset($variables['content']['#layout']['settings']['column_width'])) {
+    return;
+  }
+  $variables['section_width'] = $variables['content']['#layout']['settings']['column_width'];
+}
 
 /**
  * Button layout block preprocess.
@@ -33,6 +47,49 @@ function premium_theme_preprocess_block__inline_block__button(array &$variables)
 
           if (isset($button['target_blank']) && (int) $button['target_blank'] === 1) {
             $variables['target'] = '_blank';
+          }
+        }
+      }
+    }
+    catch (MissingDataException $e) {
+      Drupal::logger('premium_theme')->error($e->getMessage());
+    }
+  }
+}
+
+/**
+ * Hero layout block preprocess.
+ *
+ * @param array $variables
+ *   Theme variables.
+ */
+function premium_theme_preprocess_block__inline_block__hero(array &$variables) {
+  /** @var BlockContent $block */
+  $block = $variables['elements']['content']['#block_content'];
+
+  if ($block->hasField('field_background') && !$block->get('field_background')->isEmpty()) {
+    $media = $block->get('field_background')->entity;
+    if (!is_null($media)) {
+      $variables['media_image'] = \Drupal::entityTypeManager()->getViewBuilder('media')->view($media, 'hero');
+      if (in_array($media->bundle(), ['remote_video', 'cdn_video'])) {
+        $variables['media'] = \Drupal::entityTypeManager()->getViewBuilder('media')->view($media);
+      }
+    }
+  }
+
+  if ($block->hasField('field_cta') && !$block->get('field_cta')->isEmpty()) {
+    try {
+      $button = $block->get('field_cta')->first();
+
+      if (!is_null($button)) {
+        $button = $button->getValue();
+
+        if (isset($button['uri'], $button['title'])) {
+          $variables['link']['title'] = $button['title'];
+          $variables['link']['url'] = Url::fromUri($button['uri'])->toString();
+
+          if (isset($button['target_blank']) && (int) $button['target_blank'] === 1) {
+            $variables['link']['target'] = '_blank';
           }
         }
       }
