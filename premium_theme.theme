@@ -132,19 +132,9 @@ function premium_theme_preprocess_menu__meta_menu(array &$variables) {
   }
   elseif ($region === 'burgermenu') {
     $variables['attributes']['class'][] = 'burger-menu-list';
-    $variables['attributes']['class'][] = 'burger-menu-list--highlighted';
+    $variables['attributes']['class'][] = 'burger-menu-list--meta';
   }
   if (!empty($items = $variables['items'])) {
-    // Based on region we will add a "headline" to the menu.
-    if ($region === 'burgermenu') {
-      $headline = [
-        'headline' => [
-          'title' => t('Highlighted', ['context' => 'premium']),
-          'attributes' => (new Attribute)->addClass('burger-menu-list__label'),
-        ],
-      ];
-      $variables['items'] = $headline + $variables['items'];
-    }
     foreach ($items as $key => $item) {
       if ($region === 'header') {
         $variables['items'][$key]['attributes']->addClass('meta-menu-item');
@@ -171,13 +161,6 @@ function premium_theme_preprocess_menu__main__burgermenu(array &$variables) {
     ->addClass('burger-menu-list--secondary');
 
   if (!empty($items = $variables['items'])) {
-    $headline = [
-      'headline' => [
-        'title' => t('Menu', ['context' => 'premium']),
-        'attributes' => (new Attribute)->addClass('burger-menu-list__label'),
-      ],
-    ];
-    $variables['items'] = $headline + $variables['items'];
     foreach ($items as $key => $item) {
       $attributes = $variables['items'][$key]['attributes'];
       $attributes->addClass('burger-menu-list-item');
@@ -188,7 +171,6 @@ function premium_theme_preprocess_menu__main__burgermenu(array &$variables) {
       if (!empty($item['below'])) {
         $variables['items'][$key]['svg_icon']['name'] = 'arrow-line-down';
         $variables['items'][$key]['svg_icon']['clickAction'] = 'triggerSubNavigation($event)';
-        $variables['items'][$key]['below'] = $headline + $variables['items'][$key]['below'];
         foreach ($variables['items'][$key]['below'] as $key_below => $below_value) {
           if ($key_below === 'headline') {
             continue;
