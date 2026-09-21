@@ -17,6 +17,11 @@ require_once __DIR__ . '/includes/layout-blocks.inc';
  *   Template variables.
  */
 function premium_theme_preprocess_input(array &$variables) {
+  // Gin Layout Builder owns the markup and classes of its marked forms.
+  if (!empty($variables['element']['#gin_lb_form']) && _premium_theme_has_supported_gin_lb()) {
+    return;
+  }
+
   $type = $variables['element']['#type'];
   if ($type === 'checkbox') {
     $variables['attributes']['class'][] = 'checkbox';
@@ -53,6 +58,11 @@ function premium_theme_preprocess_input(array &$variables) {
  *   Template variables.
  */
 function premium_theme_preprocess_textarea(array &$variables) {
+  // Gin Layout Builder owns the markup and classes of its marked forms.
+  if (!empty($variables['element']['#gin_lb_form']) && _premium_theme_has_supported_gin_lb()) {
+    return;
+  }
+
   $variables['attributes']['class'][] = 'textarea';
 }
 
@@ -77,6 +87,11 @@ function premium_theme_theme_suggestions_menu_alter(array &$suggestions, array $
  * @param $variables
  */
 function premium_theme_theme_suggestions_form_alter(array &$suggestions, array $variables) {
+  // Gin Layout Builder owns the markup and classes of its marked forms.
+  if (!empty($variables['element']['#gin_lb_form']) && _premium_theme_has_supported_gin_lb()) {
+    return;
+  }
+
   if (isset($variables['element'])) {
     $suggestions[] = $variables['theme_hook_original'] . '__' . $variables['element']['#form_id'];
   }
@@ -271,4 +286,76 @@ function premium_theme_preprocess_cookie_info(array &$variables) {
   /*$variables['attributes']->addClass('theme')
     ->addClass('section')
     ->addClass('theme-secondary');*/
+}
+
+/**
+ * Implements hook_library_info_alter().
+ */
+function premium_theme_library_info_alter(array &$libraries, $extension) {
+  if (!in_array($extension, ['premium_theme', 'claro', 'core'], TRUE)) {
+    return;
+  }
+
+  if (!_premium_theme_has_supported_gin_lb()) {
+    // Preserve the pre-integration libraries-override behavior on older sites.
+    // Keeping it here lets supported installations use Drupal/Gin's dialogs.
+    if ($extension === 'claro' && isset($libraries['claro.drupal.dialog'])) {
+      $libraries['claro.drupal.dialog']['override'] = FALSE;
+    }
+    elseif ($extension === 'core') {
+      unset($libraries['drupal.dialog.off_canvas']['css']['base']['misc/dialog/off-canvas/css/reset.css']);
+    }
+    return;
+  }
+
+  if ($extension !== 'premium_theme') {
+    return;
+  }
+
+  // Gin LB supplies the editor shell. Keep these library names valid for old
+  // layout templates, without loading a second, conflicting editor skin.
+  // Other libraries (including status messages and lazy loading) are untouched.
+  foreach (['dialog', 'layout-builder', 'layout-builder-form', 'layout-builder-form-confirmation'] as $name) {
+    if (isset($libraries[$name])) {
+      $libraries[$name]['css'] = [];
+    }
+  }
+}
+
+/**
+ * Whether the enabled editor has the supported Composer package versions.
+ *
+ * Gin stays optional. Missing metadata, unversioned checkouts and future major
+ * versions keep the legacy styling until explicitly supported. Read Composer's
+ * normalized versions, not branch aliases or cached theme .info.yml versions.
+ * Library discovery is cached, so rebuild Drupal caches after package updates.
+ */
+function _premium_theme_has_supported_gin_lb(): bool {
+  if (!\Drupal::moduleHandler()->moduleExists('gin_lb')
+    || !\Drupal::moduleHandler()->moduleExists('gin_toolbar')
+    || !class_exists(\Composer\InstalledVersions::class)) {
+    return FALSE;
+  }
+
+  // Composer normalizes release versions to four numeric components. Bound the
+  // supported major versions before their first prerelease, too.
+  $ranges = [
+    'drupal/gin' => ['5.0.0.0', '6.0.0.0-dev'],
+    'drupal/gin_toolbar' => ['3.0.0.0', '4.0.0.0-dev'],
+    'drupal/gin_lb' => ['3.0.0.0-beta1', '4.0.0.0-dev'],
+  ];
+  foreach ($ranges as $package => [$minimum, $maximum]) {
+    if (!\Composer\InstalledVersions::isInstalled($package)) {
+      return FALSE;
+    }
+    $version = \Composer\InstalledVersions::getVersion($package);
+    if (!is_string($version)
+      || !preg_match('/^\d+\.\d+\.\d+\.\d+(?:-(?:alpha|beta|RC|patch)\d*)?$/', $version)
+      || version_compare($version, $minimum, '<')
+      || version_compare($version, $maximum, '>=')) {
+      return FALSE;
+    }
+  }
+
+  return TRUE;
 }
